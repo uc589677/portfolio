@@ -6,9 +6,8 @@
     <title>OmniAI - All-in-One AI Platform</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs3@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased" x-data="{ activeTab: 'chat' }">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
 
     <div class="flex h-screen overflow-hidden">
         
@@ -23,13 +22,13 @@
 
                 <!-- Navigation Links -->
                 <nav class="px-4 space-y-1">
-                    <button @click="activeTab = 'chat'" :class="activeTab === 'chat' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition">
+                    <button onclick="switchTab('chat')" id="btn-chat" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-indigo-600 text-white">
                         💬 AI Chatbot
                     </button>
-                    <button @click="activeTab = 'image'" :class="activeTab === 'image' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition">
+                    <button onclick="switchTab('image')" id="btn-image" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
                         🎨 Image Generator
                     </button>
-                    <button @click="activeTab = 'code'" :class="activeTab === 'code' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white'" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition">
+                    <button onclick="switchTab('code')" id="btn-code" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
                         💻 Code Assistant
                     </button>
                 </nav>
@@ -53,7 +52,7 @@
             
             <!-- Top Navbar -->
             <header class="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-900/50 backdrop-blur">
-                <h1 class="text-lg font-semibold capitalize text-white" x-text="activeTab + ' Workspace'"></h1>
+                <h1 id="page-title" class="text-lg font-semibold capitalize text-white">Chat Workspace</h1>
                 <div class="flex items-center space-x-4">
                     <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-xs px-3 py-1 rounded-full font-medium">API Connected</span>
                 </div>
@@ -63,7 +62,7 @@
             <div class="flex-1 p-6 flex flex-col justify-between max-w-5xl w-full mx-auto">
                 
                 <!-- 1. Chat Tab -->
-                <div x-show="activeTab === 'chat'" class="flex flex-col h-full space-y-4">
+                <div id="tab-chat" class="flex flex-col h-full space-y-4">
                     <div class="flex-1 space-y-4 overflow-y-auto pr-2">
                         <div class="flex items-start space-x-3">
                             <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs">AI</div>
@@ -80,7 +79,7 @@
                 </div>
 
                 <!-- 2. Image Generator Tab -->
-                <div x-show="activeTab === 'image'" class="flex flex-col h-full space-y-4">
+                <div id="tab-image" class="hidden flex flex-col h-full space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
                         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between">
                             <div>
@@ -97,7 +96,7 @@
                 </div>
 
                 <!-- 3. Code Assistant Tab -->
-                <div x-show="activeTab === 'code'" class="flex flex-col h-full space-y-4">
+                <div id="tab-code" class="hidden flex flex-col h-full space-y-4">
                     <div class="flex-1 flex flex-col space-y-3">
                         <textarea rows="6" placeholder="Paste your buggy code or describe the function you want to create..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-600"></textarea>
                         <button class="self-end bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold transition">Debug & Write Code</button>
@@ -107,6 +106,28 @@
             </div>
         </main>
     </div>
+
+    <!-- JavaScript for Tab Switching -->
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.getElementById('tab-chat').classList.add('hidden');
+            document.getElementById('tab-image').classList.add('hidden');
+            document.getElementById('tab-code').classList.add('hidden');
+
+            // Remove active styles from all buttons
+            document.getElementById('btn-chat').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+            document.getElementById('btn-image').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+            document.getElementById('btn-code').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+
+            // Show selected tab and highlight button
+            document.getElementById('tab-' + tabName).classList.remove('hidden');
+            document.getElementById('btn-' + tabName).className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-indigo-600 text-white";
+
+            // Update header title
+            document.getElementById('page-title').innerText = tabName + ' Workspace';
+        }
+    </script>
 
 </body>
 </html>
