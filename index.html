@@ -48,7 +48,7 @@
         </aside>
 
         <!-- Mobile Top Bar for Tabs -->
-        <div class="md:hidden bg-slate-900 border-b border-slate-800 p-3 flex justify-around items-center">
+        <div class="md:hidden bg-slate-900 border-b border-slate-800 p-3 flex justify-around items-center shrink-0">
             <button onclick="switchTab('chat')" id="mob-btn-chat" class="text-xs px-3 py-2 rounded-lg font-medium bg-indigo-600 text-white">💬 Chat</button>
             <button onclick="switchTab('image')" id="mob-btn-image" class="text-xs px-3 py-2 rounded-lg font-medium text-slate-400">🎨 Image</button>
             <button onclick="switchTab('code')" id="mob-btn-code" class="text-xs px-3 py-2 rounded-lg font-medium text-slate-400">💻 Code</button>
@@ -64,11 +64,11 @@
             </header>
 
             <!-- Dynamic Content Area -->
-            <div class="flex-1 p-4 md:p-6 flex flex-col justify-between max-w-5xl w-full mx-auto overflow-y-auto">
+            <div class="flex-1 p-4 md:p-6 flex flex-col justify-between max-w-5xl w-full mx-auto overflow-hidden">
                 
                 <!-- 1. Chat Tab -->
-                <div id="tab-chat" class="flex flex-col h-full space-y-4">
-                    <div class="flex-1 space-y-4 overflow-y-auto pr-2">
+                <div id="tab-chat" class="flex flex-col h-full space-y-4 overflow-hidden">
+                    <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto pr-2">
                         <div class="flex items-start space-x-3">
                             <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs shrink-0">AI</div>
                             <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-xl text-slate-200 text-sm md:text-base">
@@ -78,8 +78,8 @@
                     </div>
                     <!-- Input Box -->
                     <div class="relative shrink-0 pt-2">
-                        <input type="text" placeholder="Type a message or prompt..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3.5 pl-4 pr-16 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600 transition">
-                        <button class="absolute right-2.5 top-3.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition">Send</button>
+                        <input type="text" id="chat-input" placeholder="Type a message or prompt..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3.5 pl-4 pr-16 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600 transition" onkeypress="handleKeyPress(event)">
+                        <button onclick="sendMessage()" class="absolute right-2.5 top-3.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition">Send</button>
                     </div>
                 </div>
 
@@ -90,11 +90,11 @@
                             <div>
                                 <h3 class="text-md font-semibold text-white mb-2">Image Parameters</h3>
                                 <p class="text-xs text-slate-400 mb-4">Describe the image you want to generate using text prompts.</p>
-                                <textarea rows="4" placeholder="A futuristic cyberpunk city in neon lights..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-600 text-sm"></textarea>
+                                <textarea id="image-prompt" rows="4" placeholder="A futuristic cyberpunk city in neon lights..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-600 text-sm"></textarea>
                             </div>
-                            <button class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold transition mt-4">Generate Image</button>
+                            <button onclick="generateImage()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold transition mt-4">Generate Image</button>
                         </div>
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-center text-slate-600 text-sm min-h-[150px]">
+                        <div id="image-preview" class="bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-center text-slate-600 text-sm min-h-[150px] p-4 text-center">
                             Generated preview will appear here
                         </div>
                     </div>
@@ -103,8 +103,8 @@
                 <!-- 3. Code Assistant Tab -->
                 <div id="tab-code" class="hidden flex flex-col h-full space-y-4">
                     <div class="flex-1 flex flex-col space-y-3">
-                        <textarea rows="6" placeholder="Paste your buggy code or describe the function you want to create..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600"></textarea>
-                        <button class="self-end bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold transition text-sm">Debug & Write Code</button>
+                        <textarea id="code-input" rows="6" placeholder="Paste your buggy code or describe the function you want to create..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600"></textarea>
+                        <button onclick="generateCode()" class="self-end bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold transition text-sm">Debug & Write Code</button>
                     </div>
                 </div>
 
@@ -112,31 +112,94 @@
         </main>
     </div>
 
-    <!-- JavaScript for Tab Switching -->
+    <!-- JavaScript for Interactivity -->
     <script>
         function switchTab(tabName) {
-            // Hide all tabs
             document.getElementById('tab-chat').classList.add('hidden');
             document.getElementById('tab-image').classList.add('hidden');
             document.getElementById('tab-code').classList.add('hidden');
 
-            // Reset Desktop Buttons
             document.getElementById('btn-chat').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
             document.getElementById('btn-image').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
             document.getElementById('btn-code').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
 
-            // Reset Mobile Buttons
             document.getElementById('mob-btn-chat').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
             document.getElementById('mob-btn-image').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
             document.getElementById('mob-btn-code').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
 
-            // Show selected tab and highlight buttons
             document.getElementById('tab-' + tabName).classList.remove('hidden');
             document.getElementById('btn-' + tabName).className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-indigo-600 text-white";
             document.getElementById('mob-btn-' + tabName).className = "text-xs px-3 py-2 rounded-lg font-medium bg-indigo-600 text-white";
 
-            // Update header title
             document.getElementById('page-title').innerText = tabName + ' Workspace';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('chat-input');
+            const messageText = inputField.value.trim();
+            if (!messageText) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // User Message Bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = "flex items-start justify-end space-x-3";
+            userBubble.innerHTML = `
+                <div class="bg-indigo-600 text-white p-4 rounded-2xl max-w-xl text-sm md:text-base">
+                    ${escapeHtml(messageText)}
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs shrink-0 text-indigo-400 font-bold">U</div>
+            `;
+            chatMessages.appendChild(userBubble);
+            inputField.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // AI Loading / Response Simulator
+            setTimeout(() => {
+                const aiBubble = document.createElement('div');
+                aiBubble.className = "flex items-start space-x-3";
+                aiBubble.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs shrink-0">AI</div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-xl text-slate-200 text-sm md:text-base">
+                        Aapne kaha: "${escapeHtml(messageText)}". Yeh ek working AI interface hai! Isme aap apni API connect karke real responses la sakte hain.
+                    </div>
+                `;
+                chatMessages.appendChild(aiBubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 600);
+        }
+
+        function generateImage() {
+            const prompt = document.getElementById('image-prompt').value.trim();
+            const preview = document.getElementById('image-preview');
+            if(!prompt) {
+                alert('Pehle kuch prompt likhiye!');
+                return;
+            }
+            preview.innerHTML = `<span class="text-indigo-400 animate-pulse">Generating image for: "${escapeHtml(prompt)}"...</span>`;
+            setTimeout(() => {
+                preview.innerHTML = `<div class="text-emerald-400 text-xs">Image generated successfully! (Demo mode)</div>`;
+            }, 1500);
+        }
+
+        function generateCode() {
+            const codeInput = document.getElementById('code-input').value.trim();
+            if(!codeInput) {
+                alert('Pehle code ya description likhiye!');
+                return;
+            }
+            alert('Code Assistant request received!');
+        }
+
+        function escapeHtml(text) {
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
     </script>
 
