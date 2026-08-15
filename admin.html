@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Admin Panel</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+</head>
+
+<body>
+
+<header class="header">
+
+  <a href="index.html" class="logo">
+    ANIME<span>HUB</span>
+  </a>
+
+  <button
+    class="logout"
+    onclick="logout()"
+  >
+    Logout
+  </button>
+
+</header>
+
+
+<main class="admin">
+
+  <h1>Admin Panel</h1>
+
+
+  <section class="admin-card">
+
+    <h2>Add Anime</h2>
+
+    <input
+      id="title"
+      placeholder="Anime title"
+    >
+
+    <input
+      id="genre"
+      placeholder="Genre"
+    >
+
+    <textarea
+      id="description"
+      placeholder="Description"
+    ></textarea>
+
+    <label>Poster</label>
+
+    <input
+      id="poster"
+      type="file"
+      accept="image/*"
+    >
+
+    <button
+      class="primary"
+      onclick="addAnime()"
+    >
+      Upload Anime
+    </button>
+
+    <p id="animeMessage"></p>
+
+  </section>
+
+
+  <section class="admin-card">
+
+    <h2>Add Episode</h2>
+
+    <select id="animeSelect">
+      <option>Loading...</option>
+    </select>
+
+    <input
+      id="episodeNumber"
+      type="number"
+      min="1"
+      placeholder="Episode number"
+    >
+
+    <input
+      id="episodeTitle"
+      placeholder="Episode title"
+    >
+
+    <label>Video</label>
+
+    <input
+      id="video"
+      type="file"
+      accept="video/*"
+    >
+
+    <button
+      class="primary"
+      onclick="addEpisode()"
+    >
+      Upload Episode
+    </button>
+
+    <p id="episodeMessage"></p>
+
+  </section>
+
+
+  <section class="admin-card">
+
+    <h2>Your Anime</h2>
+
+    <div id="adminAnimeList">
+      Loading...
+    </div>
+
+  </section>
+
+</main>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>
