@@ -2,40 +2,40 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-               maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>AnimeHub</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
 }
 
 body{
+  margin:0;
   background:#08080f;
   color:#fff;
   font-family:Arial,sans-serif;
-  padding-bottom:80px;
 }
 
 header{
   height:65px;
+  padding:0 5%;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 16px;
   background:#11111c;
+  border-bottom:1px solid #29293a;
   position:sticky;
   top:0;
-  z-index:10;
-  border-bottom:1px solid #272738;
+  z-index:20;
 }
 
 .logo{
+  color:#fff;
+  text-decoration:none;
   font-size:23px;
   font-weight:900;
 }
@@ -44,132 +44,168 @@ header{
   color:#ff3d81;
 }
 
-.header-btn{
+nav button{
   background:#ff3d81;
-  border:0;
   color:white;
+  border:0;
+  border-radius:7px;
   padding:9px 13px;
-  border-radius:8px;
-  font-weight:bold;
+  margin-left:5px;
 }
 
 .hero{
-  padding:35px 18px;
-  background:
-    linear-gradient(180deg,#151529,#08080f);
+  padding:50px 7%;
+  background:linear-gradient(180deg,#18182c,#08080f);
 }
 
 .hero h1{
-  font-size:34px;
-  margin-bottom:10px;
+  font-size:38px;
+  margin:0 0 10px;
 }
 
 .hero p{
   color:#aaa;
-  margin-bottom:20px;
 }
 
 .search{
   width:100%;
+  max-width:500px;
   padding:15px;
-  background:#151522;
-  border:1px solid #303044;
-  border-radius:10px;
+  margin-top:15px;
+  background:#11111c;
   color:#fff;
-  outline:none;
-  font-size:16px;
+  border:1px solid #303044;
+  border-radius:8px;
 }
 
 .container{
-  padding:20px 16px;
-}
-
-.section-title{
-  margin-bottom:18px;
-  font-size:22px;
+  width:90%;
+  max-width:1200px;
+  margin:30px auto;
 }
 
 .grid{
   display:grid;
   grid-template-columns:
-    repeat(2,minmax(0,1fr));
-  gap:14px;
+  repeat(auto-fill,minmax(160px,1fr));
+  gap:17px;
 }
 
 .card{
   background:#141420;
-  border-radius:10px;
+  border-radius:9px;
   overflow:hidden;
-  border:1px solid #242437;
   cursor:pointer;
 }
 
-.poster{
+.card img{
   width:100%;
   aspect-ratio:2/3;
   object-fit:cover;
-  background:#20202d;
+  display:block;
 }
 
 .card-info{
-  padding:10px;
+  padding:11px;
 }
 
-.card-title{
+.card-info h3{
+  margin:0 0 7px;
   font-size:15px;
-  font-weight:bold;
-  margin-bottom:5px;
 }
 
-.card-meta{
-  color:#888;
+.card-info p{
+  color:#999;
+  margin:0;
   font-size:12px;
 }
 
-.empty{
-  text-align:center;
-  color:#777;
-  padding:50px 10px;
+.page{
+  display:none;
+}
+
+.detail{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:25px;
+}
+
+.detail img{
+  width:100%;
+  border-radius:10px;
+}
+
+.genre{
+  color:#ff3d81;
+}
+
+.description{
+  color:#aaa;
+  line-height:1.6;
+}
+
+.episode{
+  display:block;
+  width:100%;
+  max-width:700px;
+  padding:14px;
+  margin:9px 0;
+  background:#171725;
+  color:white;
+  border:1px solid #303044;
+  border-radius:8px;
+  text-align:left;
+}
+
+.player{
+  margin-top:30px;
+}
+
+.player video{
+  width:100%;
+  max-height:600px;
+  background:#000;
+  border-radius:10px;
+}
+
+.download{
+  display:inline-block;
+  margin-top:12px;
+  padding:12px 17px;
+  background:#ff3d81;
+  color:white;
+  text-decoration:none;
+  border-radius:7px;
 }
 
 .modal{
   display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.88);
   z-index:100;
-  overflow:auto;
+  background:rgba(0,0,0,.9);
   padding:20px;
+  overflow:auto;
 }
 
-.modal-box{
-  max-width:600px;
+.box{
+  width:100%;
+  max-width:500px;
   margin:20px auto;
-  background:#13131f;
-  border:1px solid #303044;
-  border-radius:14px;
-  padding:20px;
+  background:#141420;
+  padding:22px;
+  border-radius:12px;
 }
 
 .close{
   float:right;
   background:#292936;
-  border:0;
   color:#fff;
-  width:35px;
-  height:35px;
+  border:0;
   border-radius:50%;
-  font-size:20px;
-}
-
-.modal h2{
-  margin-bottom:20px;
-}
-
-label{
-  display:block;
-  margin:15px 0 7px;
-  color:#ccc;
+  width:32px;
+  height:32px;
+  font-size:18px;
 }
 
 input,
@@ -177,130 +213,62 @@ textarea,
 select{
   width:100%;
   padding:13px;
-  border-radius:8px;
-  border:1px solid #343449;
+  margin:8px 0 14px;
   background:#090912;
   color:#fff;
-  outline:none;
-  font-size:15px;
+  border:1px solid #303044;
+  border-radius:7px;
 }
 
 textarea{
   min-height:100px;
-  resize:vertical;
 }
 
 .primary{
   width:100%;
-  margin-top:18px;
   padding:14px;
   background:#ff3d81;
-  color:white;
+  color:#fff;
   border:0;
-  border-radius:8px;
+  border-radius:7px;
   font-weight:bold;
-  font-size:16px;
 }
 
-.anime-detail{
-  display:none;
-  padding:20px 16px;
-}
-
-.back{
-  background:#222230;
-  color:#fff;
-  border:0;
-  padding:10px 15px;
-  border-radius:8px;
-  margin-bottom:20px;
-}
-
-.detail-top{
-  display:flex;
-  gap:18px;
-}
-
-.detail-poster{
-  width:130px;
-  height:195px;
-  object-fit:cover;
-  border-radius:9px;
-}
-
-.detail-info{
-  flex:1;
-}
-
-.detail-info h1{
-  font-size:23px;
-  margin-bottom:10px;
-}
-
-.genre{
-  color:#ff3d81;
-  margin-bottom:10px;
-  font-size:13px;
-}
-
-.description{
-  color:#aaa;
-  line-height:1.5;
-  font-size:14px;
-}
-
-.episode-list{
-  margin-top:25px;
-}
-
-.episode{
-  width:100%;
-  padding:14px;
-  margin-bottom:9px;
-  background:#171725;
-  border:1px solid #29293c;
-  color:#fff;
-  border-radius:8px;
-  text-align:left;
-}
-
-.episode:hover{
-  background:#ff3d81;
-}
-
-.player{
-  margin-top:20px;
-}
-
-.player video{
-  width:100%;
-  max-height:60vh;
-  background:#000;
+.admin-card{
+  background:#141420;
+  padding:20px;
   border-radius:10px;
-}
-
-.player-title{
-  margin:12px 0;
+  margin-bottom:20px;
 }
 
 .delete{
   background:#c62828;
   color:white;
   border:0;
-  padding:10px 14px;
-  border-radius:8px;
-  margin-top:15px;
+  padding:8px 12px;
+  border-radius:6px;
 }
 
-.status{
-  margin-top:12px;
-  color:#ff3d81;
-  text-align:center;
+.admin-item{
+  padding:12px 0;
+  border-bottom:1px solid #29293a;
+  display:flex;
+  justify-content:space-between;
 }
 
-@media(max-width:350px){
+@media(max-width:600px){
+
+  .detail{
+    grid-template-columns:130px 1fr;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
   .grid{
-    grid-template-columns:1fr;
+    grid-template-columns:
+    repeat(2,minmax(0,1fr));
   }
 }
 </style>
@@ -309,794 +277,1095 @@ textarea{
 <body>
 
 <header>
-  <div class="logo">
-    ANIME<span>HUB</span>
-  </div>
 
-  <button class="header-btn"
-          onclick="openAdmin()">
-    + Upload
-  </button>
+<a class="logo" href="#" onclick="home()">
+ANIME<span>HUB</span>
+</a>
+
+<nav>
+<button onclick="openLogin()">Admin</button>
+</nav>
+
 </header>
 
-<section class="hero" id="homeHero">
 
-  <h1>Anime World</h1>
+<section id="homePage">
 
-  <p>
-    Your personal anime collection
-  </p>
+<section class="hero">
 
-  <input
-    id="search"
-    class="search"
-    type="search"
-    placeholder="Search anime..."
-  >
+<h1>Anime World</h1>
+
+<p>Watch your anime collection online.</p>
+
+<input
+class="search"
+id="search"
+placeholder="Search anime..."
+>
 
 </section>
 
-<main class="container" id="home">
 
-  <h2 class="section-title">
-    Anime Collection
-  </h2>
+<main class="container">
 
-  <div id="animeGrid" class="grid"></div>
+<h2>Anime Collection</h2>
+
+<div id="grid" class="grid">
+Loading...
+</div>
 
 </main>
 
-<section id="animeDetail"
-         class="anime-detail">
+</section>
 
-  <button class="back"
-          onclick="showHome()">
-    ← Back
-  </button>
 
-  <div id="detailContent"></div>
+<section id="detailPage" class="page">
+
+<main class="container">
+
+<button
+class="episode"
+onclick="home()"
+>
+← Back
+</button>
+
+<div id="detail"></div>
+
+</main>
 
 </section>
 
 
-<!-- ADMIN MODAL -->
+<section id="adminPage" class="page">
 
-<div id="adminModal"
-     class="modal">
+<main class="container">
 
-  <div class="modal-box">
+<h1>Admin Panel</h1>
 
-    <button class="close"
-            onclick="closeAdmin()">
-      ×
-    </button>
+<div class="admin-card">
 
-    <h2>Add Anime</h2>
+<h2>Add Anime</h2>
 
-    <label>Anime Name</label>
+<input
+id="animeTitle"
+placeholder="Anime title"
+>
 
-    <input
-      id="animeName"
-      placeholder="Example: My Anime"
-    >
+<input
+id="animeGenre"
+placeholder="Genre"
+>
 
-    <label>Genre</label>
+<textarea
+id="animeDescription"
+placeholder="Description"
+></textarea>
 
-    <input
-      id="animeGenre"
-      placeholder="Action, Fantasy..."
-    >
+<label>Poster</label>
 
-    <label>Description</label>
+<input
+id="poster"
+type="file"
+accept="image/*"
+>
 
-    <textarea
-      id="animeDescription"
-      placeholder="Anime description..."
-    ></textarea>
+<button
+class="primary"
+onclick="addAnime()"
+>
+Upload Anime
+</button>
 
-    <label>Poster</label>
-
-    <input
-      id="animePoster"
-      type="file"
-      accept="image/*"
-    >
-
-    <button class="primary"
-            onclick="addAnime()">
-      Add Anime
-    </button>
-
-    <p id="status"
-       class="status"></p>
-
-  </div>
+<p id="animeMsg"></p>
 
 </div>
 
 
-<!-- EPISODE MODAL -->
+<div class="admin-card">
 
-<div id="episodeModal"
-     class="modal">
+<h2>Add Episode</h2>
 
-  <div class="modal-box">
+<select id="animeSelect"></select>
 
-    <button class="close"
-            onclick="closeEpisode()">
-      ×
-    </button>
+<input
+id="episodeNumber"
+type="number"
+placeholder="Episode number"
+>
 
-    <h2>Add Episode</h2>
+<input
+id="episodeTitle"
+placeholder="Episode title"
+>
 
-    <input
-      type="hidden"
-      id="episodeAnimeId"
-    >
+<label>Video</label>
 
-    <label>Episode Number</label>
+<input
+id="video"
+type="file"
+accept="video/*"
+>
 
-    <input
-      id="episodeNumber"
-      type="number"
-      min="1"
-      placeholder="1"
-    >
+<button
+class="primary"
+onclick="addEpisode()"
+>
+Upload Episode
+</button>
 
-    <label>Episode Title</label>
+<p id="episodeMsg"></p>
 
-    <input
-      id="episodeTitle"
-      placeholder="Episode title"
-    >
+</div>
 
-    <label>Video</label>
 
-    <input
-      id="episodeVideo"
-      type="file"
-      accept="video/*"
-    >
+<div class="admin-card">
 
-    <button class="primary"
-            onclick="addEpisode()">
-      Upload Episode
-    </button>
+<h2>Anime List</h2>
 
-    <p id="episodeStatus"
-       class="status"></p>
+<div id="adminList"></div>
 
-  </div>
+</div>
+
+<button
+class="delete"
+onclick="logout()"
+>
+Logout
+</button>
+
+</main>
+
+</section>
+
+
+<!-- LOGIN -->
+
+<div id="loginModal" class="modal">
+
+<div class="box">
+
+<button
+class="close"
+onclick="closeLogin()"
+>
+×
+</button>
+
+<h2>Admin Login</h2>
+
+<input
+id="email"
+type="email"
+placeholder="Email"
+>
+
+<input
+id="password"
+type="password"
+placeholder="Password"
+>
+
+<button
+class="primary"
+onclick="login()"
+>
+Login
+</button>
+
+<p id="loginMsg"></p>
+
+</div>
 
 </div>
 
 
 <script>
 
-const DB_NAME = "AnimeHubDB";
-const STORE = "anime";
+/* =========================================
+   SUPABASE CONFIG
+========================================= */
 
-let db;
-let currentAnime = null;
+const SUPABASE_URL =
+"YOUR_SUPABASE_URL";
+
+const SUPABASE_ANON_KEY =
+"YOUR_SUPABASE_ANON_KEY";
 
 
-/* =========================
-   DATABASE
-========================= */
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-function openDB(){
 
-  return new Promise((resolve,reject)=>{
+/* =========================================
+   HELPERS
+========================================= */
 
-    const request =
-      indexedDB.open(DB_NAME,1);
+function escapeHTML(value){
 
-    request.onupgradeneeded = e => {
-
-      const database = e.target.result;
-
-      if(!database.objectStoreNames
-         .contains(STORE)){
-
-        database.createObjectStore(
-          STORE,
-          {keyPath:"id"}
-        );
-
-      }
-
-    };
-
-    request.onsuccess = e => {
-
-      db = e.target.result;
-
-      resolve(db);
-
-    };
-
-    request.onerror = () =>
-      reject(request.error);
-
-  });
+return String(value || "")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
 }
 
 
-function getAllAnime(){
-
-  return new Promise((resolve,reject)=>{
-
-    const tx =
-      db.transaction(STORE,"readonly");
-
-    const store =
-      tx.objectStore(STORE);
-
-    const request =
-      store.getAll();
-
-    request.onsuccess = () =>
-      resolve(request.result);
-
-    request.onerror = () =>
-      reject(request.error);
-
-  });
-
-}
-
-
-function saveAnime(anime){
-
-  return new Promise((resolve,reject)=>{
-
-    const tx =
-      db.transaction(STORE,"readwrite");
-
-    tx.objectStore(STORE)
-      .put(anime);
-
-    tx.oncomplete = resolve;
-
-    tx.onerror = () =>
-      reject(tx.error);
-
-  });
-
-}
-
-
-function deleteAnime(id){
-
-  return new Promise((resolve,reject)=>{
-
-    const tx =
-      db.transaction(STORE,"readwrite");
-
-    tx.objectStore(STORE)
-      .delete(id);
-
-    tx.oncomplete = resolve;
-
-    tx.onerror = () =>
-      reject(tx.error);
-
-  });
-
-}
-
-
-/* =========================
+/* =========================================
    HOME
-========================= */
+========================================= */
 
-async function renderHome(){
+let animeList=[];
 
-  const anime =
-    await getAllAnime();
 
-  const search =
-    document
-      .getElementById("search")
-      .value
-      .toLowerCase()
-      .trim();
+async function loadAnime(){
 
-  const filtered =
-    anime.filter(a =>
-      a.name.toLowerCase()
-       .includes(search)
-    );
+const {data,error}=
 
-  const grid =
-    document.getElementById("animeGrid");
+await supabaseClient
+.from("anime")
+.select("*")
+.order("created_at",{ascending:false});
 
-  if(filtered.length === 0){
 
-    grid.innerHTML = `
-      <div class="empty">
-        No anime found.
-        <br><br>
-        Tap "+ Upload" to add one.
-      </div>
-    `;
+if(error){
 
-    return;
+console.error(error);
 
-  }
+document.getElementById("grid")
+.innerHTML="<p>Unable to load anime.</p>";
 
-  grid.innerHTML =
-    filtered.map(a => `
-
-      <div class="card"
-           onclick="openAnime('${a.id}')">
-
-        ${
-          a.poster
-          ?
-          `<img class="poster"
-                src="${URL.createObjectURL(a.poster)}">`
-          :
-          `<div class="poster"></div>`
-        }
-
-        <div class="card-info">
-
-          <div class="card-title">
-            ${escapeHTML(a.name)}
-          </div>
-
-          <div class="card-meta">
-            ${escapeHTML(a.genre || "Anime")}
-            •
-            ${a.episodes.length} Episodes
-          </div>
-
-        </div>
-
-      </div>
-
-    `).join("");
+return;
 
 }
 
 
-/* =========================
-   OPEN ANIME
-========================= */
+animeList=data || [];
+
+renderAnime(animeList);
+
+}
+
+
+function renderAnime(list){
+
+const grid=
+document.getElementById("grid");
+
+
+if(!list.length){
+
+grid.innerHTML=
+"<p>No anime available.</p>";
+
+return;
+
+}
+
+
+grid.innerHTML=list.map(a=>`
+
+<div
+class="card"
+onclick="openAnime('${a.id}')"
+>
+
+<img
+src="${
+a.poster_url ||
+'https://placehold.co/300x430?text=Anime'
+}"
+>
+
+<div class="card-info">
+
+<h3>
+${escapeHTML(a.title)}
+</h3>
+
+<p>
+${escapeHTML(a.genre || "Anime")}
+</p>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+
+document
+.getElementById("search")
+.addEventListener("input",function(){
+
+const q=
+this.value
+.toLowerCase()
+.trim();
+
+
+renderAnime(
+animeList.filter(a=>
+a.title
+.toLowerCase()
+.includes(q)
+)
+);
+
+});
+
+
+/* =========================================
+   ANIME DETAIL
+========================================= */
 
 async function openAnime(id){
 
-  const anime =
-    (await getAllAnime())
-    .find(a => a.id === id);
-
-  if(!anime) return;
-
-  currentAnime = anime;
-
-  document.getElementById("home")
-    .style.display = "none";
-
-  document.getElementById("homeHero")
-    .style.display = "none";
-
-  document.getElementById("animeDetail")
-    .style.display = "block";
-
-  const poster =
-    anime.poster
-    ?
-    URL.createObjectURL(anime.poster)
-    :
-    "";
-
-  document.getElementById("detailContent")
-    .innerHTML = `
-
-      <div class="detail-top">
-
-        ${
-          poster
-          ?
-          `<img class="detail-poster"
-                src="${poster}">`
-          :
-          ""
-        }
-
-        <div class="detail-info">
-
-          <h1>
-            ${escapeHTML(anime.name)}
-          </h1>
-
-          <div class="genre">
-            ${escapeHTML(anime.genre || "Anime")}
-          </div>
-
-          <div class="description">
-            ${escapeHTML(anime.description || "")}
-          </div>
-
-        </div>
-
-      </div>
+document
+.getElementById("homePage")
+.style.display="none";
 
 
-      <div class="episode-list">
+document
+.getElementById("adminPage")
+.style.display="none";
 
-        <h2>Episodes</h2>
 
-        ${
-          anime.episodes.length
-          ?
-          anime.episodes
-            .map((ep,i)=>`
+document
+.getElementById("detailPage")
+.style.display="block";
 
-              <button class="episode"
-                onclick="playEpisode(${i})">
 
-                ▶ Episode ${ep.number}
-                ${ep.title
-                  ? " - "+escapeHTML(ep.title)
-                  : ""}
+const {data:anime}=
 
-              </button>
+await supabaseClient
+.from("anime")
+.select("*")
+.eq("id",id)
+.single();
 
-            `).join("")
-          :
-          `<p class="empty">
-             No episodes yet.
-           </p>`
-        }
 
-        <button
-          class="primary"
-          onclick="openEpisode('${anime.id}')">
+if(!anime)return;
 
-          + Add Episode
 
-        </button>
+const {data:episodes}=
 
-        <button
-          class="delete"
-          onclick="removeCurrentAnime()">
+await supabaseClient
+.from("episodes")
+.select("*")
+.eq("anime_id",id)
+.order("episode_number");
 
-          Delete Anime
 
-        </button>
+document
+.getElementById("detail")
+.innerHTML=`
 
-      </div>
+<div class="detail">
 
-      <div id="player"
-           class="player">
-      </div>
+<img
+src="${
+anime.poster_url ||
+'https://placehold.co/300x430?text=Anime'
+}"
+>
 
-    `;
+<div>
+
+<h1>
+${escapeHTML(anime.title)}
+</h1>
+
+<p class="genre">
+${escapeHTML(anime.genre || "Anime")}
+</p>
+
+<p class="description">
+${escapeHTML(anime.description || "")}
+</p>
+
+</div>
+
+</div>
+
+
+<br>
+
+<h2>Episodes</h2>
+
+<div>
+
+${
+episodes?.length
+?
+episodes.map(e=>`
+
+<button
+class="episode"
+onclick="playEpisode(
+'${e.video_url}',
+'${escapeHTML(
+e.title ||
+'Episode '+e.episode_number
+)}'
+)"
+>
+
+▶ Episode ${e.episode_number}
+
+${
+e.title
+?
+" - "+escapeHTML(e.title)
+:""
+}
+
+</button>
+
+`).join("")
+:
+"<p>No episodes available.</p>"
+}
+
+</div>
+
+<div
+id="player"
+class="player"
+></div>
+
+`;
 
 }
 
 
-function showHome(){
+function playEpisode(url,title){
 
-  document.getElementById("animeDetail")
-    .style.display = "none";
+document
+.getElementById("player")
+.innerHTML=`
 
-  document.getElementById("home")
-    .style.display = "block";
+<h2>${title}</h2>
 
-  document.getElementById("homeHero")
-    .style.display = "block";
+<video
+controls
+autoplay
+playsinline
+>
 
-  currentAnime = null;
+<source src="${url}">
 
-  renderHome();
+</video>
 
-}
+<br>
 
+<a
+class="download"
+href="${url}"
+download
+target="_blank"
+>
+⬇ Download Episode
+</a>
 
-/* =========================
-   VIDEO PLAYER
-========================= */
-
-function playEpisode(index){
-
-  if(!currentAnime) return;
-
-  const episode =
-    currentAnime.episodes[index];
-
-  const url =
-    URL.createObjectURL(episode.video);
-
-  document.getElementById("player")
-    .innerHTML = `
-
-      <h3 class="player-title">
-        ${escapeHTML(
-          episode.title ||
-          "Episode "+episode.number
-        )}
-      </h3>
-
-      <video controls
-             autoplay
-             playsinline>
-
-        <source src="${url}">
-
-        Your browser does not support
-        video playback.
-
-      </video>
-
-    `;
+`;
 
 }
 
 
-/* =========================
+/* =========================================
+   HOME
+========================================= */
+
+function home(){
+
+document
+.getElementById("homePage")
+.style.display="block";
+
+
+document
+.getElementById("detailPage")
+.style.display="none";
+
+
+document
+.getElementById("adminPage")
+.style.display="none";
+
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+function openLogin(){
+
+document
+.getElementById("loginModal")
+.style.display="block";
+
+}
+
+
+function closeLogin(){
+
+document
+.getElementById("loginModal")
+.style.display="none";
+
+}
+
+
+async function login(){
+
+const email=
+document.getElementById("email")
+.value.trim();
+
+
+const password=
+document.getElementById("password")
+.value;
+
+
+const {error}=
+
+await supabaseClient
+.auth
+.signInWithPassword({
+email,
+password
+});
+
+
+if(error){
+
+document
+.getElementById("loginMsg")
+.textContent=
+error.message;
+
+return;
+
+}
+
+
+closeLogin();
+
+await openAdmin();
+
+}
+
+
+/* =========================================
    ADMIN
-========================= */
+========================================= */
 
-function openAdmin(){
+async function openAdmin(){
 
-  document.getElementById("adminModal")
-    .style.display = "block";
+const {
+data:{user}
+}=
+
+await supabaseClient
+.auth
+.getUser();
+
+
+if(!user){
+
+openLogin();
+
+return;
 
 }
 
-function closeAdmin(){
 
-  document.getElementById("adminModal")
-    .style.display = "none";
+const {data:profile}=
+
+await supabaseClient
+.from("profiles")
+.select("is_admin")
+.eq("id",user.id)
+.single();
+
+
+if(!profile?.is_admin){
+
+alert("You are not an admin.");
+
+await logout();
+
+return;
 
 }
 
+
+document
+.getElementById("homePage")
+.style.display="none";
+
+
+document
+.getElementById("detailPage")
+.style.display="none";
+
+
+document
+.getElementById("adminPage")
+.style.display="block";
+
+
+loadAdminAnime();
+
+}
+
+
+/* =========================================
+   ADD ANIME
+========================================= */
 
 async function addAnime(){
 
-  const name =
-    document.getElementById("animeName")
-      .value.trim();
+const {
+data:{user}
+}=
 
-  if(!name){
+await supabaseClient
+.auth
+.getUser();
 
-    alert("Anime name required.");
 
-    return;
+const title=
+document.getElementById("animeTitle")
+.value.trim();
 
-  }
 
-  const posterInput =
-    document.getElementById("animePoster");
+const genre=
+document.getElementById("animeGenre")
+.value.trim();
 
-  const poster =
-    posterInput.files[0] || null;
 
-  const anime = {
+const description=
+document.getElementById("animeDescription")
+.value.trim();
 
-    id:
-      Date.now().toString(),
 
-    name,
+const poster=
+document.getElementById("poster")
+.files[0];
 
-    genre:
-      document.getElementById("animeGenre")
-        .value.trim(),
 
-    description:
-      document.getElementById("animeDescription")
-        .value.trim(),
+if(!title){
 
-    poster,
+alert("Anime title required.");
 
-    episodes:[],
-
-    createdAt:
-      new Date().toISOString()
-
-  };
-
-  await saveAnime(anime);
-
-  document.getElementById("status")
-    .textContent =
-      "Anime added successfully!";
-
-  document.getElementById("animeName")
-    .value = "";
-
-  document.getElementById("animeGenre")
-    .value = "";
-
-  document.getElementById("animeDescription")
-    .value = "";
-
-  document.getElementById("animePoster")
-    .value = "";
-
-  await renderHome();
+return;
 
 }
 
 
-/* =========================
-   EPISODE
-========================= */
+let posterURL=null;
 
-function openEpisode(id){
 
-  document.getElementById("episodeAnimeId")
-    .value = id;
+if(poster){
 
-  document.getElementById("episodeModal")
-    .style.display = "block";
+const extension=
+poster.name
+.split(".")
+.pop();
+
+
+const filename=
+crypto.randomUUID()+"."+extension;
+
+
+const path=
+user.id+"/"+filename;
+
+
+const {error}=
+
+await supabaseClient
+.storage
+.from("posters")
+.upload(
+path,
+poster,
+{
+contentType:poster.type
+}
+);
+
+
+if(error){
+
+alert(error.message);
+
+return;
 
 }
 
 
-function closeEpisode(){
+const {data}=
 
-  document.getElementById("episodeModal")
-    .style.display = "none";
+supabaseClient
+.storage
+.from("posters")
+.getPublicUrl(path);
+
+
+posterURL=data.publicUrl;
 
 }
 
+
+const {error}=
+
+await supabaseClient
+.from("anime")
+.insert({
+
+title:title,
+
+genre:genre,
+
+description:description,
+
+poster_url:posterURL,
+
+created_by:user.id
+
+});
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+document
+.getElementById("animeMsg")
+.textContent=
+"Anime uploaded successfully.";
+
+
+document
+.getElementById("animeTitle")
+.value="";
+
+
+document
+.getElementById("animeGenre")
+.value="";
+
+
+document
+.getElementById("animeDescription")
+.value="";
+
+
+document
+.getElementById("poster")
+.value="";
+
+
+loadAdminAnime();
+
+loadAnime();
+
+}
+
+
+/* =========================================
+   ADD EPISODE
+========================================= */
 
 async function addEpisode(){
 
-  const id =
-    document.getElementById("episodeAnimeId")
-      .value;
+const {
+data:{user}
+}=
 
-  const anime =
-    (await getAllAnime())
-      .find(a => a.id === id);
-
-  if(!anime) return;
+await supabaseClient
+.auth
+.getUser();
 
 
-  const number =
-    document.getElementById("episodeNumber")
-      .value;
-
-  const title =
-    document.getElementById("episodeTitle")
-      .value.trim();
-
-  const video =
-    document.getElementById("episodeVideo")
-      .files[0];
+const animeId=
+document.getElementById("animeSelect")
+.value;
 
 
-  if(!number || !video){
-
-    alert(
-      "Episode number and video are required."
-    );
-
-    return;
-
-  }
+const number=
+document.getElementById("episodeNumber")
+.value;
 
 
-  anime.episodes.push({
-
-    id:
-      Date.now().toString(),
-
-    number:
-      Number(number),
-
-    title,
-
-    video
-
-  });
+const title=
+document.getElementById("episodeTitle")
+.value.trim();
 
 
-  await saveAnime(anime);
-
-  document.getElementById("episodeStatus")
-    .textContent =
-      "Episode uploaded successfully!";
+const video=
+document.getElementById("video")
+.files[0];
 
 
-  document.getElementById("episodeNumber")
-    .value = "";
+if(!animeId || !number || !video){
 
-  document.getElementById("episodeTitle")
-    .value = "";
+alert(
+"Anime, episode number and video required."
+);
 
-  document.getElementById("episodeVideo")
-    .value = "";
-
-
-  currentAnime = anime;
-
-  closeEpisode();
-
-  openAnime(id);
+return;
 
 }
 
 
-/* =========================
-   DELETE
-========================= */
+const extension=
+video.name
+.split(".")
+.pop();
 
-async function removeCurrentAnime(){
 
-  if(!currentAnime) return;
+const filename=
+crypto.randomUUID()+"."+extension;
 
-  const confirmDelete =
-    confirm(
-      "Delete this anime and all episodes?"
-    );
 
-  if(!confirmDelete) return;
+const path=
+user.id+
+"/"+
+animeId+
+"/"+
+filename;
 
-  await deleteAnime(currentAnime.id);
 
-  showHome();
+const {error:uploadError}=
+
+await supabaseClient
+.storage
+.from("videos")
+.upload(
+path,
+video,
+{
+contentType:video.type
+}
+);
+
+
+if(uploadError){
+
+alert(uploadError.message);
+
+return;
 
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+const {data}=
+
+supabaseClient
+.storage
+.from("videos")
+.getPublicUrl(path);
+
+
+const videoURL=
+data.publicUrl;
+
+
+const {error}=
+
+await supabaseClient
+.from("episodes")
+.insert({
+
+anime_id:animeId,
+
+episode_number:Number(number),
+
+title:title,
+
+video_url:videoURL,
+
+created_by:user.id
+
+});
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
 
 document
-  .getElementById("search")
-  .addEventListener(
-    "input",
-    renderHome
-  );
+.getElementById("episodeMsg")
+.textContent=
+"Episode uploaded successfully.";
 
 
-/* =========================
-   SECURITY / TEXT
-========================= */
+document
+.getElementById("episodeNumber")
+.value="";
 
-function escapeHTML(text){
 
-  return String(text)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+document
+.getElementById("episodeTitle")
+.value="";
+
+
+document
+.getElementById("video")
+.value="";
+
 
 }
 
 
-/* =========================
+/* =========================================
+   ADMIN LIST
+========================================= */
+
+async function loadAdminAnime(){
+
+const {data}=
+
+await supabaseClient
+.from("anime")
+.select("*")
+.order("created_at",{ascending:false});
+
+
+const select=
+document.getElementById("animeSelect");
+
+
+select.innerHTML=
+data?.map(a=>`
+
+<option value="${a.id}">
+${escapeHTML(a.title)}
+</option>
+
+`).join("") ||
+"<option>No anime</option>";
+
+
+const list=
+document.getElementById("adminList");
+
+
+list.innerHTML=
+data?.map(a=>`
+
+<div class="admin-item">
+
+<span>
+${escapeHTML(a.title)}
+</span>
+
+<button
+class="delete"
+onclick="deleteAnime('${a.id}')"
+>
+Delete
+</button>
+
+</div>
+
+`).join("") ||
+"<p>No anime.</p>";
+
+}
+
+
+/* =========================================
+   DELETE
+========================================= */
+
+async function deleteAnime(id){
+
+if(!confirm(
+"Delete this anime and its episodes?"
+))return;
+
+
+const {error}=
+
+await supabaseClient
+.from("anime")
+.delete()
+.eq("id",id);
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+
+loadAdminAnime();
+
+loadAnime();
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+async function logout(){
+
+await supabaseClient
+.auth
+.signOut();
+
+
+document
+.getElementById("adminPage")
+.style.display="none";
+
+
+document
+.getElementById("detailPage")
+.style.display="none";
+
+
+document
+.getElementById("homePage")
+.style.display="block";
+
+}
+
+
+/* =========================================
    START
-========================= */
+========================================= */
 
-(async function(){
-
-  try{
-
-    await openDB();
-
-    await renderHome();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Browser storage could not be opened."
-    );
-
-  }
-
-})();
+loadAnime();
 
 </script>
 
