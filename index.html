@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeVerse - Upload & Download Anime</title>
+    <title>AnimeHub - Hindi & English Dubbed Anime</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -16,37 +16,41 @@
             <div>
                 <!-- Logo -->
                 <div class="p-6 flex items-center space-x-3">
-                    <div class="bg-rose-600 p-2 rounded-xl text-white font-bold text-xl">🍥</div>
-                    <span class="text-xl font-bold tracking-wider text-white">AnimeVerse</span>
+                    <div class="bg-rose-600 p-2 rounded-xl text-white font-bold text-xl">⚡</div>
+                    <span class="text-xl font-bold tracking-wider text-white">AnimeHub</span>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="px-4 space-y-1">
-                    <button onclick="switchTab('home')" id="btn-home" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white">
-                        🏠 Home / Downloads
+                    <button onclick="filterCategory('all')" id="nav-all" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white">
+                        🔥 All Anime
                     </button>
-                    <button onclick="switchTab('upload')" id="btn-upload" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
-                        📤 Upload Anime (Admin)
+                    <button onclick="filterCategory('hindi')" id="nav-hindi" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
+                        🇮🇳 Hindi Dubbed
+                    </button>
+                    <button onclick="filterCategory('english')" id="nav-english" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
+                        🇺🇸 English Dubbed
                     </button>
                 </nav>
             </div>
 
-            <!-- User Profile Footer -->
+            <!-- Footer Profile -->
             <div class="p-4 border-t border-slate-800">
                 <div class="flex items-center space-x-3 px-2 py-2">
                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-purple-500 flex items-center justify-center font-bold text-white">U</div>
                     <div class="overflow-hidden">
                         <p class="text-sm font-semibold text-white truncate">Uday Choudhary</p>
-                        <p class="text-xs text-rose-400">Admin</p>
+                        <p class="text-xs text-rose-400">Owner / Admin</p>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- Mobile Top Bar -->
+        <!-- Mobile Top Filter Bar -->
         <div class="md:hidden bg-slate-900 border-b border-slate-800 p-3 flex justify-around items-center shrink-0">
-            <button onclick="switchTab('home')" id="mob-btn-home" class="text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white">🏠 Home</button>
-            <button onclick="switchTab('upload')" id="mob-btn-upload" class="text-xs px-4 py-2 rounded-lg font-medium text-slate-400">📤 Upload</button>
+            <button onclick="filterCategory('all')" id="mob-all" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-rose-600 text-white">All</button>
+            <button onclick="filterCategory('hindi')" id="mob-hindi" class="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400">Hindi Dub</button>
+            <button onclick="filterCategory('english')" id="mob-english" class="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400">English Dub</button>
         </div>
 
         <!-- Main Workspace -->
@@ -54,125 +58,113 @@
             
             <!-- Top Navbar -->
             <header class="h-14 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-slate-900/50 backdrop-blur shrink-0">
-                <h1 id="page-title" class="text-base md:text-lg font-semibold text-white">Anime Library & Downloads</h1>
-                <span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-medium">Cloud Storage Ready</span>
+                <h1 id="page-title" class="text-base md:text-lg font-semibold text-white">Explore Anime Collection</h1>
+                <input type="text" id="search-bar" onkeyup="searchAnime()" placeholder="Search anime..." class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-rose-600 w-36 md:w-64">
             </header>
 
-            <!-- Dynamic Content Area -->
-            <div class="flex-1 p-4 md:p-6 overflow-y-auto max-w-6xl w-full mx-auto">
-                
-                <!-- 1. Home / Download Tab -->
-                <div id="tab-home" class="space-y-6">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-xl font-bold text-white">Latest Anime Episodes</h2>
-                        <input type="text" placeholder="Search anime..." class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
-                    </div>
-
-                    <!-- Anime Grid -->
-                    <div id="anime-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <!-- Sample Anime Card -->
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between">
-                            <div class="h-40 bg-slate-800 flex items-center justify-center text-slate-500 font-semibold">
-                                Anime Poster
-                            </div>
-                            <div class="p-4 space-y-2">
-                                <h3 class="font-bold text-white text-base">Naruto Shippuden - Ep 101</h3>
-                                <p class="text-xs text-slate-400">Action, Adventure, Ninja</p>
-                                <div class="pt-2 flex space-x-2">
-                                    <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download (720p)</a>
-                                    <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. Upload Tab (Admin Panel) -->
-                <div id="tab-upload" class="hidden max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
-                    <h2 class="text-lg font-bold text-white mb-2">Upload New Anime Episode</h2>
+            <!-- Anime Grid Container -->
+            <div class="flex-1 p-4 md:p-6 overflow-y-auto max-w-7xl w-full mx-auto">
+                <div id="anime-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Anime Title & Episode</label>
-                            <input type="text" id="anime-title" placeholder="e.g., Jujutsu Kaisen Season 2 - Ep 01" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
+                    <!-- Anime Item 1 (Hindi Dub) -->
+                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="hindi" data-title="naruto shippuden hindi dub">
+                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
+                            Naruto Poster
+                            <span class="absolute top-3 left-3 bg-rose-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">Hindi Dub</span>
                         </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Genres / Tags</label>
-                            <input type="text" id="anime-genre" placeholder="e.g., Action, Supernatural" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
-                        </div>
-                        <div>
-                            <label class="text-xs text-slate-400 block mb-1">Video Download Link (Cloud URL / Mega / Drive)</label>
-                            <input type="text" id="anime-link" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
+                        <div class="p-4 space-y-2">
+                            <h3 class="font-bold text-white text-base">Naruto Shippuden (Hindi)</h3>
+                            <p class="text-xs text-slate-400">Action, Adventure • 500+ Episodes</p>
+                            <div class="pt-2 flex space-x-2">
+                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
+                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
+                            </div>
                         </div>
                     </div>
 
-                    <button onclick="uploadAnime()" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold transition mt-2">Publish & Make Available</button>
-                </div>
+                    <!-- Anime Item 2 (English Dub) -->
+                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="english" data-title="jujutsu kaisen english dub">
+                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
+                            Jujutsu Kaisen Poster
+                            <span class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">English Dub</span>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <h3 class="font-bold text-white text-base">Jujutsu Kaisen (English)</h3>
+                            <p class="text-xs text-slate-400">Supernatural, Action • Season 2</p>
+                            <div class="pt-2 flex space-x-2">
+                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
+                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Anime Item 3 (Both/Hindi & English) -->
+                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="hindi english" data-title="dragon ball z hindi english dub">
+                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
+                            Dragon Ball Z Poster
+                            <div class="absolute top-3 left-3 flex space-x-1">
+                                <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Hindi</span>
+                                <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">English</span>
+                            </div>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <h3 class="font-bold text-white text-base">Dragon Ball Z (Multi-Audio)</h3>
+                            <p class="text-xs text-slate-400">Action, Martial Arts • Remastered</p>
+                            <div class="pt-2 flex space-x-2">
+                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
+                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </main>
     </div>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript Filter and Search Logic -->
     <script>
-        function switchTab(tabName) {
-            document.getElementById('tab-home').classList.add('hidden');
-            document.getElementById('tab-upload').classList.add('hidden');
+        function filterCategory(category) {
+            const cards = document.querySelectorAll('.anime-card');
+            
+            // Update button active states
+            ['all', 'hindi', 'english'].forEach(cat => {
+                const btnDesk = document.getElementById('nav-' + cat);
+                const btnMob = document.getElementById('mob-' + cat);
+                if(btnDesk) btnDesk.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+                if(btnMob) btnMob.className = "text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400";
+            });
 
-            document.getElementById('btn-home').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
-            document.getElementById('btn-upload').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
-
-            document.getElementById('mob-btn-home').className = "text-xs px-4 py-2 rounded-lg font-medium text-slate-400";
-            document.getElementById('mob-btn-upload').className = "text-xs px-4 py-2 rounded-lg font-medium text-slate-400";
-
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            if(tabName === 'home') {
-                document.getElementById('btn-home').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
-                document.getElementById('mob-btn-home').className = "text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white";
-                document.getElementById('page-title').innerText = "Anime Library & Downloads";
-            } else {
-                document.getElementById('btn-upload').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
-                document.getElementById('mob-btn-upload').className = "text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white";
-                document.getElementById('page-title').innerText = "Admin Upload Panel";
+            if(document.getElementById('nav-' + category)) {
+                document.getElementById('nav-' + category).className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
             }
-        }
-
-        function uploadAnime() {
-            const title = document.getElementById('anime-title').value.trim();
-            const genre = document.getElementById('anime-genre').value.trim();
-            const link = document.getElementById('anime-link').value.trim();
-
-            if(!title || !link) {
-                alert('Please fill out the title and download link!');
-                return;
+            if(document.getElementById('mob-' + category)) {
+                document.getElementById('mob-' + category).className = "text-xs px-3 py-1.5 rounded-lg font-medium bg-rose-600 text-white";
             }
 
-            const grid = document.getElementById('anime-grid');
-            const card = document.createElement('div');
-            card.className = "bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between";
-            card.innerHTML = `
-                <div class="h-40 bg-slate-800 flex items-center justify-center text-slate-500 font-semibold">
-                    Anime Poster
-                </div>
-                <div class="p-4 space-y-2">
-                    <h3 class="font-bold text-white text-base">${escapeHtml(title)}</h3>
-                    <p class="text-xs text-slate-400">${escapeHtml(genre || 'Anime')}</p>
-                    <div class="pt-2 flex space-x-2">
-                        <a href="${escapeHtml(link)}" target="_blank" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Video</a>
-                    </div>
-                </div>
-            `;
-            grid.prepend(card);
-            alert('Anime uploaded successfully!');
-            document.getElementById('anime-title').value = '';
-            document.getElementById('anime-genre').value = '';
-            document.getElementById('anime-link').value = '';
-            switchTab('home');
+            // Filter cards
+            cards.forEach(card => {
+                const cardCats = card.getAttribute('data-category');
+                if (category === 'all' || cardCats.includes(category)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
-        function escapeHtml(text) {
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        function searchAnime() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const cards = document.querySelectorAll('.anime-card');
+
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                if (title.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
     </script>
 
