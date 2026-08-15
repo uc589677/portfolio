@@ -1,1373 +1,1515 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-<title>AnimeHub</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-*{
-  box-sizing:border-box;
-}
-
-body{
-  margin:0;
-  background:#08080f;
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
-
-header{
-  height:65px;
-  padding:0 5%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#11111c;
-  border-bottom:1px solid #29293a;
-  position:sticky;
-  top:0;
-  z-index:20;
-}
-
-.logo{
-  color:#fff;
-  text-decoration:none;
-  font-size:23px;
-  font-weight:900;
-}
-
-.logo span{
-  color:#ff3d81;
-}
-
-nav button{
-  background:#ff3d81;
-  color:white;
-  border:0;
-  border-radius:7px;
-  padding:9px 13px;
-  margin-left:5px;
-}
-
-.hero{
-  padding:50px 7%;
-  background:linear-gradient(180deg,#18182c,#08080f);
-}
-
-.hero h1{
-  font-size:38px;
-  margin:0 0 10px;
-}
-
-.hero p{
-  color:#aaa;
-}
-
-.search{
-  width:100%;
-  max-width:500px;
-  padding:15px;
-  margin-top:15px;
-  background:#11111c;
-  color:#fff;
-  border:1px solid #303044;
-  border-radius:8px;
-}
-
-.container{
-  width:90%;
-  max-width:1200px;
-  margin:30px auto;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:
-  repeat(auto-fill,minmax(160px,1fr));
-  gap:17px;
-}
-
-.card{
-  background:#141420;
-  border-radius:9px;
-  overflow:hidden;
-  cursor:pointer;
-}
-
-.card img{
-  width:100%;
-  aspect-ratio:2/3;
-  object-fit:cover;
-  display:block;
-}
-
-.card-info{
-  padding:11px;
-}
-
-.card-info h3{
-  margin:0 0 7px;
-  font-size:15px;
-}
-
-.card-info p{
-  color:#999;
-  margin:0;
-  font-size:12px;
-}
-
-.page{
-  display:none;
-}
-
-.detail{
-  display:grid;
-  grid-template-columns:220px 1fr;
-  gap:25px;
-}
-
-.detail img{
-  width:100%;
-  border-radius:10px;
-}
-
-.genre{
-  color:#ff3d81;
-}
-
-.description{
-  color:#aaa;
-  line-height:1.6;
-}
-
-.episode{
-  display:block;
-  width:100%;
-  max-width:700px;
-  padding:14px;
-  margin:9px 0;
-  background:#171725;
-  color:white;
-  border:1px solid #303044;
-  border-radius:8px;
-  text-align:left;
-}
-
-.player{
-  margin-top:30px;
-}
-
-.player video{
-  width:100%;
-  max-height:600px;
-  background:#000;
-  border-radius:10px;
-}
-
-.download{
-  display:inline-block;
-  margin-top:12px;
-  padding:12px 17px;
-  background:#ff3d81;
-  color:white;
-  text-decoration:none;
-  border-radius:7px;
-}
-
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:100;
-  background:rgba(0,0,0,.9);
-  padding:20px;
-  overflow:auto;
-}
-
-.box{
-  width:100%;
-  max-width:500px;
-  margin:20px auto;
-  background:#141420;
-  padding:22px;
-  border-radius:12px;
-}
-
-.close{
-  float:right;
-  background:#292936;
-  color:#fff;
-  border:0;
-  border-radius:50%;
-  width:32px;
-  height:32px;
-  font-size:18px;
-}
-
-input,
-textarea,
-select{
-  width:100%;
-  padding:13px;
-  margin:8px 0 14px;
-  background:#090912;
-  color:#fff;
-  border:1px solid #303044;
-  border-radius:7px;
-}
-
-textarea{
-  min-height:100px;
-}
-
-.primary{
-  width:100%;
-  padding:14px;
-  background:#ff3d81;
-  color:#fff;
-  border:0;
-  border-radius:7px;
-  font-weight:bold;
-}
-
-.admin-card{
-  background:#141420;
-  padding:20px;
-  border-radius:10px;
-  margin-bottom:20px;
-}
-
-.delete{
-  background:#c62828;
-  color:white;
-  border:0;
-  padding:8px 12px;
-  border-radius:6px;
-}
-
-.admin-item{
-  padding:12px 0;
-  border-bottom:1px solid #29293a;
-  display:flex;
-  justify-content:space-between;
-}
-
-@media(max-width:600px){
-
-  .detail{
-    grid-template-columns:130px 1fr;
-  }
-
-  .hero h1{
-    font-size:32px;
-  }
-
-  .grid{
-    grid-template-columns:
-    repeat(2,minmax(0,1fr));
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-
-<a class="logo" href="#" onclick="home()">
-ANIME<span>HUB</span>
-</a>
-
-<nav>
-<button onclick="openLogin()">Admin</button>
-</nav>
-
-</header>
-
-
-<section id="homePage">
-
-<section class="hero">
-
-<h1>Anime World</h1>
-
-<p>Watch your anime collection online.</p>
-
-<input
-class="search"
-id="search"
-placeholder="Search anime..."
->
-
-</section>
-
-
-<main class="container">
-
-<h2>Anime Collection</h2>
-
-<div id="grid" class="grid">
-Loading...
-</div>
-
-</main>
-
-</section>
-
-
-<section id="detailPage" class="page">
-
-<main class="container">
-
-<button
-class="episode"
-onclick="home()"
->
-← Back
-</button>
-
-<div id="detail"></div>
-
-</main>
-
-</section>
-
-
-<section id="adminPage" class="page">
-
-<main class="container">
-
-<h1>Admin Panel</h1>
-
-<div class="admin-card">
-
-<h2>Add Anime</h2>
-
-<input
-id="animeTitle"
-placeholder="Anime title"
->
-
-<input
-id="animeGenre"
-placeholder="Genre"
->
-
-<textarea
-id="animeDescription"
-placeholder="Description"
-></textarea>
-
-<label>Poster</label>
-
-<input
-id="poster"
-type="file"
-accept="image/*"
->
-
-<button
-class="primary"
-onclick="addAnime()"
->
-Upload Anime
-</button>
-
-<p id="animeMsg"></p>
-
-</div>
-
-
-<div class="admin-card">
-
-<h2>Add Episode</h2>
-
-<select id="animeSelect"></select>
-
-<input
-id="episodeNumber"
-type="number"
-placeholder="Episode number"
->
-
-<input
-id="episodeTitle"
-placeholder="Episode title"
->
-
-<label>Video</label>
-
-<input
-id="video"
-type="file"
-accept="video/*"
->
-
-<button
-class="primary"
-onclick="addEpisode()"
->
-Upload Episode
-</button>
-
-<p id="episodeMsg"></p>
-
-</div>
-
-
-<div class="admin-card">
-
-<h2>Anime List</h2>
-
-<div id="adminList"></div>
-
-</div>
-
-<button
-class="delete"
-onclick="logout()"
->
-Logout
-</button>
-
-</main>
-
-</section>
-
-
-<!-- LOGIN -->
-
-<div id="loginModal" class="modal">
-
-<div class="box">
-
-<button
-class="close"
-onclick="closeLogin()"
->
-×
-</button>
-
-<h2>Admin Login</h2>
-
-<input
-id="email"
-type="email"
-placeholder="Email"
->
-
-<input
-id="password"
-type="password"
-placeholder="Password"
->
-
-<button
-class="primary"
-onclick="login()"
->
-Login
-</button>
-
-<p id="loginMsg"></p>
-
-</div>
-
-</div>
-
-
-<script>
-
-/* =========================================
-   SUPABASE CONFIG
-========================================= */
-
-const SUPABASE_URL =
-"YOUR_SUPABASE_URL";
-
-const SUPABASE_ANON_KEY =
-"YOUR_SUPABASE_ANON_KEY";
-
-
-const supabaseClient =
-window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AnimeHub</title>
 
-/* =========================================
-   HELPERS
-========================================= */
+  <link rel="stylesheet" href="style.css">
 
-function escapeHTML(value){
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+</head>
 
-return String(value || "")
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
+<body>
 
-}
+<header class="header">
 
+  <a href="index.html" class="logo">
+    ANIME<span>HUB</span>
+  </a>
 
-/* =========================================
-   HOME
-========================================= */
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Admin</a>
+  </nav>
 
-let animeList=[];
+</header>
 
+<section class="hero">
 
-async function loadAnime(){
+  <h1>Anime World</h1>
 
-const {data,error}=
+  <p>Watch your favorite anime online.</p>
 
-await supabaseClient
-.from("anime")
-.select("*")
-.order("created_at",{ascending:false});
+  <input
+    id="search"
+    class="search"
+    placeholder="Search anime..."
+  >
 
+</section>
 
-if(error){
+<main class="container">
 
-console.error(error);
+  <h2>Anime Collection</h2>
 
-document.getElementById("grid")
-.innerHTML="<p>Unable to load anime.</p>";
+  <div id="animeGrid" class="anime-grid">
+    Loading...
+  </div>
 
-return;
+</main>
 
-}
-
-
-animeList=data || [];
-
-renderAnime(animeList);
-
-}
-
-
-function renderAnime(list){
-
-const grid=
-document.getElementById("grid");
-
-
-if(!list.length){
-
-grid.innerHTML=
-"<p>No anime available.</p>";
-
-return;
-
-}
-
-
-grid.innerHTML=list.map(a=>`
-
-<div
-class="card"
-onclick="openAnime('${a.id}')"
->
-
-<img
-src="${
-a.poster_url ||
-'https://placehold.co/300x430?text=Anime'
-}"
->
-
-<div class="card-info">
-
-<h3>
-${escapeHTML(a.title)}
-</h3>
-
-<p>
-${escapeHTML(a.genre || "Anime")}
-</p>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-
-document
-.getElementById("search")
-.addEventListener("input",function(){
-
-const q=
-this.value
-.toLowerCase()
-.trim();
-
-
-renderAnime(
-animeList.filter(a=>
-a.title
-.toLowerCase()
-.includes(q)
-)
-);
-
-});
-
-
-/* =========================================
-   ANIME DETAIL
-========================================= */
-
-async function openAnime(id){
-
-document
-.getElementById("homePage")
-.style.display="none";
-
-
-document
-.getElementById("adminPage")
-.style.display="none";
-
-
-document
-.getElementById("detailPage")
-.style.display="block";
-
-
-const {data:anime}=
-
-await supabaseClient
-.from("anime")
-.select("*")
-.eq("id",id)
-.single();
-
-
-if(!anime)return;
-
-
-const {data:episodes}=
-
-await supabaseClient
-.from("episodes")
-.select("*")
-.eq("anime_id",id)
-.order("episode_number");
-
-
-document
-.getElementById("detail")
-.innerHTML=`
-
-<div class="detail">
-
-<img
-src="${
-anime.poster_url ||
-'https://placehold.co/300x430?text=Anime'
-}"
->
-
-<div>
-
-<h1>
-${escapeHTML(anime.title)}
-</h1>
-
-<p class="genre">
-${escapeHTML(anime.genre || "Anime")}
-</p>
-
-<p class="description">
-${escapeHTML(anime.description || "")}
-</p>
-
-</div>
-
-</div>
-
-
-<br>
-
-<h2>Episodes</h2>
-
-<div>
-
-${
-episodes?.length
-?
-episodes.map(e=>`
-
-<button
-class="episode"
-onclick="playEpisode(
-'${e.video_url}',
-'${escapeHTML(
-e.title ||
-'Episode '+e.episode_number
-)}'
-)"
->
-
-▶ Episode ${e.episode_number}
-
-${
-e.title
-?
-" - "+escapeHTML(e.title)
-:""
-}
-
-</button>
-
-`).join("")
-:
-"<p>No episodes available.</p>"
-}
-
-</div>
-
-<div
-id="player"
-class="player"
-></div>
-
-`;
-
-}
-
-
-function playEpisode(url,title){
-
-document
-.getElementById("player")
-.innerHTML=`
-
-<h2>${title}</h2>
-
-<video
-controls
-autoplay
-playsinline
->
-
-<source src="${url}">
-
-</video>
-
-<br>
-
-<a
-class="download"
-href="${url}"
-download
-target="_blank"
->
-⬇ Download Episode
-</a>
-
-`;
-
-}
-
-
-/* =========================================
-   HOME
-========================================= */
-
-function home(){
-
-document
-.getElementById("homePage")
-.style.display="block";
-
-
-document
-.getElementById("detailPage")
-.style.display="none";
-
-
-document
-.getElementById("adminPage")
-.style.display="none";
-
-}
-
-
-/* =========================================
-   LOGIN
-========================================= */
-
-function openLogin(){
-
-document
-.getElementById("loginModal")
-.style.display="block";
-
-}
-
-
-function closeLogin(){
-
-document
-.getElementById("loginModal")
-.style.display="none";
-
-}
-
-
-async function login(){
-
-const email=
-document.getElementById("email")
-.value.trim();
-
-
-const password=
-document.getElementById("password")
-.value;
-
-
-const {error}=
-
-await supabaseClient
-.auth
-.signInWithPassword({
-email,
-password
-});
-
-
-if(error){
-
-document
-.getElementById("loginMsg")
-.textContent=
-error.message;
-
-return;
-
-}
-
-
-closeLogin();
-
-await openAdmin();
-
-}
-
-
-/* =========================================
-   ADMIN
-========================================= */
-
-async function openAdmin(){
-
-const {
-data:{user}
-}=
-
-await supabaseClient
-.auth
-.getUser();
-
-
-if(!user){
-
-openLogin();
-
-return;
-
-}
-
-
-const {data:profile}=
-
-await supabaseClient
-.from("profiles")
-.select("is_admin")
-.eq("id",user.id)
-.single();
-
-
-if(!profile?.is_admin){
-
-alert("You are not an admin.");
-
-await logout();
-
-return;
-
-}
-
-
-document
-.getElementById("homePage")
-.style.display="none";
-
-
-document
-.getElementById("detailPage")
-.style.display="none";
-
-
-document
-.getElementById("adminPage")
-.style.display="block";
-
-
-loadAdminAnime();
-
-}
-
-
-/* =========================================
-   ADD ANIME
-========================================= */
-
-async function addAnime(){
-
-const {
-data:{user}
-}=
-
-await supabaseClient
-.auth
-.getUser();
-
-
-const title=
-document.getElementById("animeTitle")
-.value.trim();
-
-
-const genre=
-document.getElementById("animeGenre")
-.value.trim();
-
-
-const description=
-document.getElementById("animeDescription")
-.value.trim();
-
-
-const poster=
-document.getElementById("poster")
-.files[0];
-
-
-if(!title){
-
-alert("Anime title required.");
-
-return;
-
-}
-
-
-let posterURL=null;
-
-
-if(poster){
-
-const extension=
-poster.name
-.split(".")
-.pop();
-
-
-const filename=
-crypto.randomUUID()+"."+extension;
-
-
-const path=
-user.id+"/"+filename;
-
-
-const {error}=
-
-await supabaseClient
-.storage
-.from("posters")
-.upload(
-path,
-poster,
-{
-contentType:poster.type
-}
-);
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-const {data}=
-
-supabaseClient
-.storage
-.from("posters")
-.getPublicUrl(path);
-
-
-posterURL=data.publicUrl;
-
-}
-
-
-const {error}=
-
-await supabaseClient
-.from("anime")
-.insert({
-
-title:title,
-
-genre:genre,
-
-description:description,
-
-poster_url:posterURL,
-
-created_by:user.id
-
-});
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-document
-.getElementById("animeMsg")
-.textContent=
-"Anime uploaded successfully.";
-
-
-document
-.getElementById("animeTitle")
-.value="";
-
-
-document
-.getElementById("animeGenre")
-.value="";
-
-
-document
-.getElementById("animeDescription")
-.value="";
-
-
-document
-.getElementById("poster")
-.value="";
-
-
-loadAdminAnime();
-
-loadAnime();
-
-}
-
-
-/* =========================================
-   ADD EPISODE
-========================================= */
-
-async function addEpisode(){
-
-const {
-data:{user}
-}=
-
-await supabaseClient
-.auth
-.getUser();
-
-
-const animeId=
-document.getElementById("animeSelect")
-.value;
-
-
-const number=
-document.getElementById("episodeNumber")
-.value;
-
-
-const title=
-document.getElementById("episodeTitle")
-.value.trim();
-
-
-const video=
-document.getElementById("video")
-.files[0];
-
-
-if(!animeId || !number || !video){
-
-alert(
-"Anime, episode number and video required."
-);
-
-return;
-
-}
-
-
-const extension=
-video.name
-.split(".")
-.pop();
-
-
-const filename=
-crypto.randomUUID()+"."+extension;
-
-
-const path=
-user.id+
-"/"+
-animeId+
-"/"+
-filename;
-
-
-const {error:uploadError}=
-
-await supabaseClient
-.storage
-.from("videos")
-.upload(
-path,
-video,
-{
-contentType:video.type
-}
-);
-
-
-if(uploadError){
-
-alert(uploadError.message);
-
-return;
-
-}
-
-
-const {data}=
-
-supabaseClient
-.storage
-.from("videos")
-.getPublicUrl(path);
-
-
-const videoURL=
-data.publicUrl;
-
-
-const {error}=
-
-await supabaseClient
-.from("episodes")
-.insert({
-
-anime_id:animeId,
-
-episode_number:Number(number),
-
-title:title,
-
-video_url:videoURL,
-
-created_by:user.id
-
-});
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-document
-.getElementById("episodeMsg")
-.textContent=
-"Episode uploaded successfully.";
-
-
-document
-.getElementById("episodeNumber")
-.value="";
-
-
-document
-.getElementById("episodeTitle")
-.value="";
-
-
-document
-.getElementById("video")
-.value="";
-
-
-}
-
-
-/* =========================================
-   ADMIN LIST
-========================================= */
-
-async function loadAdminAnime(){
-
-const {data}=
-
-await supabaseClient
-.from("anime")
-.select("*")
-.order("created_at",{ascending:false});
-
-
-const select=
-document.getElementById("animeSelect");
-
-
-select.innerHTML=
-data?.map(a=>`
-
-<option value="${a.id}">
-${escapeHTML(a.title)}
-</option>
-
-`).join("") ||
-"<option>No anime</option>";
-
-
-const list=
-document.getElementById("adminList");
-
-
-list.innerHTML=
-data?.map(a=>`
-
-<div class="admin-item">
-
-<span>
-${escapeHTML(a.title)}
-</span>
-
-<button
-class="delete"
-onclick="deleteAnime('${a.id}')"
->
-Delete
-</button>
-
-</div>
-
-`).join("") ||
-"<p>No anime.</p>";
-
-}
-
-
-/* =========================================
-   DELETE
-========================================= */
-
-async function deleteAnime(id){
-
-if(!confirm(
-"Delete this anime and its episodes?"
-))return;
-
-
-const {error}=
-
-await supabaseClient
-.from("anime")
-.delete()
-.eq("id",id);
-
-
-if(error){
-
-alert(error.message);
-
-return;
-
-}
-
-
-loadAdminAnime();
-
-loadAnime();
-
-}
-
-
-/* =========================================
-   LOGOUT
-========================================= */
-
-async function logout(){
-
-await supabaseClient
-.auth
-.signOut();
-
-
-document
-.getElementById("adminPage")
-.style.display="none";
-
-
-document
-.getElementById("detailPage")
-.style.display="none";
-
-
-document
-.getElementById("homePage")
-.style.display="block";
-
-}
-
-
-/* =========================================
-   START
-========================================= */
-
-loadAnime();
-
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
+
+async function loadAnime() {
+
+  const { data, error } =
+    await supabaseClient
+      .from("anime")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
+
+  if (error) {
+    console.error(error);
+
+    document.getElementById("animeGrid").innerHTML =
+      "<p>Could not load anime.</p>";
+
+    return;
+  }
+
+  window.allAnime = data || [];
+
+  renderAnime(window.allAnime);
+}
+
+
+function renderAnime(list) {
+
+  const grid =
+    document.getElementById("animeGrid");
+
+  if (!list.length) {
+
+    grid.innerHTML = `
+      <div class="empty">
+        No anime available.
+      </div>
+    `;
+
+    return;
+  }
+
+  grid.innerHTML = list.map(anime => `
+
+    <a
+      class="anime-card"
+      href="anime.html?id=${anime.id}"
+    >
+
+      <img
+        src="${anime.poster_url || "https://placehold.co/300x430?text=Anime"}"
+        alt="${escapeHTML(anime.title)}"
+      >
+
+      <div class="card-info">
+
+        <h3>
+          ${escapeHTML(anime.title)}
+        </h3>
+
+        <p>
+          ${escapeHTML(anime.genre || "Anime")}
+        </p>
+
+      </div>
+
+    </a>
+
+  `).join("");
+}
+
+
+document
+  .getElementById("search")
+  .addEventListener("input", function () {
+
+    const q =
+      this.value
+        .toLowerCase()
+        .trim();
+
+    const filtered =
+      window.allAnime.filter(anime =>
+        anime.title
+          .toLowerCase()
+          .includes(q)
+      );
+
+    renderAnime(filtered);
+  });
+
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+loadAnime();
+
+      <!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Anime</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+</head>
+
+<body>
+
+<header class="header">
+
+  <a href="index.html" class="logo">
+    ANIME<span>HUB</span>
+  </a>
+
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+
+</header>
+
+
+<main class="container">
+
+  <div id="animeDetails">
+    Loading...
+  </div>
+
+</main>
+
+
+<script src="anime.js"></script>
+
+</body>
+</html>
+
+const params =
+  new URLSearchParams(location.search);
+
+const animeId =
+  params.get("id");
+
+
+async function loadAnime() {
+
+  if (!animeId) {
+
+    document.getElementById("animeDetails").innerHTML =
+      "<h2>Anime not found.</h2>";
+
+    return;
+  }
+
+
+  const { data: anime, error } =
+    await supabaseClient
+      .from("anime")
+      .select("*")
+      .eq("id", animeId)
+      .single();
+
+
+  if (error || !anime) {
+
+    document.getElementById("animeDetails").innerHTML =
+      "<h2>Anime not found.</h2>";
+
+    return;
+  }
+
+
+  document.title = anime.title;
+
+
+  const { data: episodes } =
+    await supabaseClient
+      .from("episodes")
+      .select("*")
+      .eq("anime_id", animeId)
+      .order("episode_number");
+
+
+  document.getElementById("animeDetails")
+    .innerHTML = `
+
+      <section class="anime-detail">
+
+        <img
+          class="detail-poster"
+          src="${
+            anime.poster_url ||
+            "https://placehold.co/300x430?text=Anime"
+          }"
+        >
+
+        <div class="detail-info">
+
+          <h1>
+            ${escapeHTML(anime.title)}
+          </h1>
+
+          <p class="genre">
+            ${escapeHTML(anime.genre || "Anime")}
+          </p>
+
+          <p class="description">
+            ${escapeHTML(anime.description || "")}
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <section class="episodes">
+
+        <h2>Episodes</h2>
+
+        ${
+          episodes?.length
+          ? episodes.map((episode, index) => `
+
+              <button
+                class="episode"
+                onclick="playEpisode(
+                  '${episode.video_url}',
+                  '${escapeHTML(
+                    episode.title ||
+                    "Episode " +
+                    episode.episode_number
+                  )}'
+                )"
+              >
+
+                ▶ Episode
+                ${episode.episode_number}
+
+                ${
+                  episode.title
+                  ? " - " +
+                    escapeHTML(episode.title)
+                  : ""
+                }
+
+              </button>
+
+            `).join("")
+          :
+          "<p>No episodes available.</p>"
+        }
+
+      </section>
+
+
+      <section
+        id="player"
+        class="player"
+      ></section>
+    `;
+}
+
+
+function playEpisode(url, title) {
+
+  const player =
+    document.getElementById("player");
+
+  player.innerHTML = `
+
+    <h2>${title}</h2>
+
+    <video
+      controls
+      autoplay
+      playsinline
+      class="video"
+    >
+
+      <source
+        src="${url}"
+      >
+
+      Your browser does not support
+      video playback.
+
+    </video>
+
+    <a
+      class="download"
+      href="${url}"
+      download
+      target="_blank"
+    >
+      ⬇ Download Episode
+    </a>
+
+  `;
+
+  player.scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+loadAnime();
+
+      <!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Admin Login</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+</head>
+
+<body>
+
+<main class="login-page">
+
+  <div class="login-box">
+
+    <h1>Anime<span>Hub</span></h1>
+
+    <h2>Admin Login</h2>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Admin email"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button
+      class="primary"
+      onclick="login()"
+    >
+      Login
+    </button>
+
+    <p id="message"></p>
+
+  </div>
+
+</main>
+
+<script src="login.js"></script>
+
+</body>
+</html>
+
+async function login() {
+
+  const email =
+    document.getElementById("email")
+      .value.trim();
+
+  const password =
+    document.getElementById("password")
+      .value;
+
+
+  if (!email || !password) {
+
+    showMessage("Email and password required.");
+
+    return;
+  }
+
+
+  const { error } =
+    await supabaseClient.auth
+      .signInWithPassword({
+        email,
+        password
+      });
+
+
+  if (error) {
+
+    showMessage(error.message);
+
+    return;
+  }
+
+
+  location.href = "admin.html";
+}
+
+
+function showMessage(message) {
+
+  document.getElementById("message")
+    .textContent = message;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Admin Panel</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+</head>
+
+<body>
+
+<header class="header">
+
+  <a href="index.html" class="logo">
+    ANIME<span>HUB</span>
+  </a>
+
+  <button
+    class="logout"
+    onclick="logout()"
+  >
+    Logout
+  </button>
+
+</header>
+
+
+<main class="admin">
+
+  <h1>Admin Panel</h1>
+
+
+  <section class="admin-card">
+
+    <h2>Add Anime</h2>
+
+    <input
+      id="title"
+      placeholder="Anime title"
+    >
+
+    <input
+      id="genre"
+      placeholder="Genre"
+    >
+
+    <textarea
+      id="description"
+      placeholder="Description"
+    ></textarea>
+
+    <label>Poster</label>
+
+    <input
+      id="poster"
+      type="file"
+      accept="image/*"
+    >
+
+    <button
+      class="primary"
+      onclick="addAnime()"
+    >
+      Upload Anime
+    </button>
+
+    <p id="animeMessage"></p>
+
+  </section>
+
+
+  <section class="admin-card">
+
+    <h2>Add Episode</h2>
+
+    <select id="animeSelect">
+      <option>Loading...</option>
+    </select>
+
+    <input
+      id="episodeNumber"
+      type="number"
+      min="1"
+      placeholder="Episode number"
+    >
+
+    <input
+      id="episodeTitle"
+      placeholder="Episode title"
+    >
+
+    <label>Video</label>
+
+    <input
+      id="video"
+      type="file"
+      accept="video/*"
+    >
+
+    <button
+      class="primary"
+      onclick="addEpisode()"
+    >
+      Upload Episode
+    </button>
+
+    <p id="episodeMessage"></p>
+
+  </section>
+
+
+  <section class="admin-card">
+
+    <h2>Your Anime</h2>
+
+    <div id="adminAnimeList">
+      Loading...
+    </div>
+
+  </section>
+
+</main>
+
+
+<script src="admin.js"></script>
+
+</body>
+</html>
+
+let currentUser = null;
+
+
+async function checkAdmin() {
+
+  const {
+    data: {
+      user
+    }
+  } =
+    await supabaseClient.auth
+      .getUser();
+
+
+  if (!user) {
+
+    location.href = "login.html";
+
+    return false;
+  }
+
+
+  const { data: profile } =
+    await supabaseClient
+      .from("profiles")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
+
+
+  if (!profile?.is_admin) {
+
+    alert("You are not an admin.");
+
+    await supabaseClient.auth.signOut();
+
+    location.href = "login.html";
+
+    return false;
+  }
+
+
+  currentUser = user;
+
+  return true;
+}
+
+
+async function loadAnime() {
+
+  const { data, error } =
+    await supabaseClient
+      .from("anime")
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
+
+
+  if (error) {
+
+    console.error(error);
+
+    return;
+  }
+
+
+  const select =
+    document.getElementById("animeSelect");
+
+
+  select.innerHTML =
+    data.length
+    ?
+    data.map(a => `
+      <option value="${a.id}">
+        ${escapeHTML(a.title)}
+      </option>
+    `).join("")
+    :
+    `<option value="">
+      No anime available
+    </option>`;
+
+
+  const list =
+    document.getElementById("adminAnimeList");
+
+
+  list.innerHTML =
+    data.length
+    ?
+    data.map(a => `
+
+      <div class="admin-anime">
+
+        <strong>
+          ${escapeHTML(a.title)}
+        </strong>
+
+        <button
+          class="delete"
+          onclick="deleteAnime('${a.id}')"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    `).join("")
+    :
+    "<p>No anime.</p>";
+}
+
+
+async function addAnime() {
+
+  const title =
+    document.getElementById("title")
+      .value.trim();
+
+  const genre =
+    document.getElementById("genre")
+      .value.trim();
+
+  const description =
+    document.getElementById("description")
+      .value.trim();
+
+  const poster =
+    document.getElementById("poster")
+      .files[0];
+
+
+  if (!title) {
+
+    alert("Anime title required.");
+
+    return;
+  }
+
+
+  let posterUrl = null;
+
+
+  if (poster) {
+
+    const extension =
+      poster.name
+        .split(".")
+        .pop();
+
+    const filename =
+      `${crypto.randomUUID()}.${extension}`;
+
+
+    const path =
+      `${currentUser.id}/${filename}`;
+
+
+    const { error } =
+      await supabaseClient
+        .storage
+        .from("posters")
+        .upload(path, poster, {
+          contentType: poster.type,
+          upsert: false
+        });
+
+
+    if (error) {
+
+      alert(error.message);
+
+      return;
+    }
+
+
+    const { data } =
+      supabaseClient
+        .storage
+        .from("posters")
+        .getPublicUrl(path);
+
+
+    posterUrl =
+      data.publicUrl;
+  }
+
+
+  const { error } =
+    await supabaseClient
+      .from("anime")
+      .insert({
+
+        title,
+        genre,
+        description,
+        poster_url: posterUrl,
+        created_by: currentUser.id
+
+      });
+
+
+  if (error) {
+
+    alert(error.message);
+
+    return;
+  }
+
+
+  document.getElementById("animeMessage")
+    .textContent =
+      "Anime uploaded successfully.";
+
+
+  document.getElementById("title")
+    .value = "";
+
+  document.getElementById("genre")
+    .value = "";
+
+  document.getElementById("description")
+    .value = "";
+
+  document.getElementById("poster")
+    .value = "";
+
+
+  loadAnime();
+}
+
+
+async function addEpisode() {
+
+  const animeId =
+    document.getElementById("animeSelect")
+      .value;
+
+  const number =
+    document.getElementById("episodeNumber")
+      .value;
+
+  const title =
+    document.getElementById("episodeTitle")
+      .value.trim();
+
+  const video =
+    document.getElementById("video")
+      .files[0];
+
+
+  if (!animeId || !number || !video) {
+
+    alert(
+      "Anime, episode number and video are required."
+    );
+
+    return;
+  }
+
+
+  const extension =
+    video.name
+      .split(".")
+      .pop();
+
+
+  const filename =
+    `${crypto.randomUUID()}.${extension}`;
+
+
+  const path =
+    `${currentUser.id}/${animeId}/${filename}`;
+
+
+  const { error: uploadError } =
+    await supabaseClient
+      .storage
+      .from("videos")
+      .upload(path, video, {
+        contentType: video.type,
+        upsert: false
+      });
+
+
+  if (uploadError) {
+
+    alert(uploadError.message);
+
+    return;
+  }
+
+
+  const { data } =
+    supabaseClient
+      .storage
+      .from("videos")
+      .getPublicUrl(path);
+
+
+  const videoUrl =
+    data.publicUrl;
+
+
+  const { error } =
+    await supabaseClient
+      .from("episodes")
+      .insert({
+
+        anime_id: animeId,
+        episode_number: Number(number),
+        title,
+        video_url: videoUrl,
+        created_by: currentUser.id
+
+      });
+
+
+  if (error) {
+
+    alert(error.message);
+
+    return;
+  }
+
+
+  document.getElementById("episodeMessage")
+    .textContent =
+      "Episode uploaded successfully.";
+
+
+  document.getElementById("episodeNumber")
+    .value = "";
+
+  document.getElementById("episodeTitle")
+    .value = "";
+
+  document.getElementById("video")
+    .value = "";
+}
+
+
+async function deleteAnime(id) {
+
+  if (!confirm(
+    "Delete this anime?"
+  )) return;
+
+
+  const { error } =
+    await supabaseClient
+      .from("anime")
+      .delete()
+      .eq("id", id);
+
+
+  if (error) {
+
+    alert(error.message);
+
+    return;
+  }
+
+
+  loadAnime();
+}
+
+
+async function logout() {
+
+  await supabaseClient.auth.signOut();
+
+  location.href = "index.html";
+}
+
+
+function escapeHTML(value) {
+
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+(async function(){
+
+  if (await checkAdmin()) {
+
+    loadAnime();
+
+  }
+
+})();
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #08080f;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  height: 65px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #11111c;
+  border-bottom: 1px solid #29293a;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.logo span,
+.login-box h1 span {
+  color: #ff3d81;
+}
+
+nav a {
+  color: #ddd;
+  text-decoration: none;
+  margin-left: 18px;
+}
+
+.hero {
+  padding: 60px 7%;
+  background: linear-gradient(
+    180deg,
+    #17172b,
+    #08080f
+  );
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.hero p {
+  color: #aaa;
+}
+
+.search {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px;
+  margin-top: 20px;
+  background: #11111d;
+  color: white;
+  border: 1px solid #303044;
+  border-radius: 9px;
+  outline: none;
+}
+
+.container,
+.admin {
+  width: 88%;
+  max-width: 1200px;
+  margin: 35px auto;
+}
+
+.anime-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+.anime-card {
+  color: white;
+  text-decoration: none;
+  background: #141420;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.anime-card:hover {
+  transform: translateY(-4px);
+}
+
+.anime-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.card-info {
+  padding: 12px;
+}
+
+.card-info h3 {
+  margin: 0 0 7px;
+  font-size: 16px;
+}
+
+.card-info p {
+  color: #999;
+  margin: 0;
+  font-size: 13px;
+}
+
+.empty {
+  color: #777;
+  padding: 40px 0;
+}
+
+.anime-detail {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 25px;
+}
+
+.detail-poster {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.detail-info h1 {
+  font-size: 32px;
+}
+
+.genre {
+  color: #ff3d81;
+}
+
+.description {
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.episodes {
+  margin-top: 35px;
+}
+
+.episode {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  padding: 14px;
+  margin: 9px 0;
+  background: #171725;
+  color: white;
+  border: 1px solid #303044;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.episode:hover {
+  background: #ff3d81;
+}
+
+.player {
+  margin-top: 30px;
+}
+
+.video {
+  width: 100%;
+  max-height: 650px;
+  background: #000;
+  border-radius: 10px;
+}
+
+.download {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 12px 18px;
+  background: #ff3d81;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.admin-card {
+  background: #141420;
+  padding: 22px;
+  margin: 20px 0;
+  border-radius: 12px;
+}
+
+.admin-card input,
+.admin-card textarea,
+.admin-card select,
+.login-box input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  background: #090912;
+  border: 1px solid #303044;
+  color: white;
+  border-radius: 8px;
+}
+
+.admin-card textarea {
+  min-height: 110px;
+}
+
+.primary {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #ff3d81;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete,
+.logout {
+  padding: 10px 14px;
+  background: #c62828;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.admin-anime {
+  padding: 14px 0;
+  border-bottom: 1px solid #29293a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background: #141420;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.login-box h1 {
+  text-align: center;
+}
+
+@media(max-width:600px) {
+
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .anime-detail {
+    grid-template-columns: 130px 1fr;
+  }
+
+  .detail-info h1 {
+    font-size: 23px;
+  }
+
+  .container,
+  .admin {
+    width: 92%;
+  }
+
+  .anime-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}     create table public.profiles (
+  id uuid primary key references auth.users(id)
+    on delete cascade,
+
+  is_admin boolean not null default false,
+
+  created_at timestamptz
+    default now()
+);
+
+
+create table public.anime (
+  id uuid primary key default gen_random_uuid(),
+
+  title text not null,
+
+  genre text,
+
+  description text,
+
+  poster_url text,
+
+  created_by uuid
+    references auth.users(id)
+    on delete set null,
+
+  created_at timestamptz
+    default now()
+);
+
+
+create table public.episodes (
+  id uuid primary key default gen_random_uuid(),
+
+  anime_id uuid not null
+    references public.anime(id)
+    on delete cascade,
+
+  episode_number integer not null,
+
+  title text,
+
+  video_url text not null,
+
+  created_by uuid
+    references auth.users(id)
+    on delete set null,
+
+  created_at timestamptz
+    default now()
+);
+
+
+alter table public.profiles
+enable row level security;
+
+alter table public.anime
+enable row level security;
+
+alter table public.episodes
+enable row level security;
+
+create policy "Public can view anime"
+on public.anime
+for select
+using (true);
+
+
+create policy "Public can view episodes"
+on public.episodes
+for select
+using (true);
+
+
+create policy "Users can view own profile"
+on public.profiles
+for select
+to authenticated
+using (id = auth.uid());
+
+
+create policy "Admins can insert anime"
+on public.anime
+for insert
+to authenticated
+with check (
+  exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+    and is_admin = true
+  )
+);
+
+
+create policy "Admins can delete anime"
+on public.anime
+for delete
+to authenticated
+using (
+  exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+    and is_admin = true
+  )
+);
+
+
+create policy "Admins can insert episodes"
+on public.episodes
+for insert
+to authenticated
+with check (
+  exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+    and is_admin = true
+  )
+)
+
+posters
+videos
+
+create policy "Public can view posters"
+on storage.objects
+for select
+using (
+  bucket_id = 'posters'
+);
+
+
+create policy "Admins can upload posters"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'posters'
+  and exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+    and is_admin = true
+  )
+);
+
+
+create policy "Public can view videos"
+on storage.objects
+for select
+using (
+  bucket_id = 'videos'
+);
+
+
+create policy "Admins can upload videos"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'videos'
+  and exists (
+    select 1
+    from public.profiles
+    where id = auth.uid()
+    and is_admin = true
+  )
+);
+      Project URL
+Publishable/anon key
+
+      const SUPABASE_URL = "https://xxxxxxxx.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "your-public-anon-key";
+
+      yourwebsite.com
+      
+yourwebsite.com/login.html
