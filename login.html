@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <title>Admin Login</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+
+</head>
+
+<body>
+
+<main class="login-page">
+
+  <div class="login-box">
+
+    <h1>Anime<span>Hub</span></h1>
+
+    <h2>Admin Login</h2>
+
+    <input
+      id="email"
+      type="email"
+      placeholder="Admin email"
+    >
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button
+      class="primary"
+      onclick="login()"
+    >
+      Login
+    </button>
+
+    <p id="message"></p>
+
+  </div>
+
+</main>
+
+<script src="login.js"></script>
+
+</body>
+</html>
