@@ -1,172 +1,1104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeHub - Hindi & English Dubbed Anime</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0,user-scalable=no">
+
+<title>AnimeHub</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#08080f;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding-bottom:80px;
+}
+
+header{
+  height:65px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:#11111c;
+  position:sticky;
+  top:0;
+  z-index:10;
+  border-bottom:1px solid #272738;
+}
+
+.logo{
+  font-size:23px;
+  font-weight:900;
+}
+
+.logo span{
+  color:#ff3d81;
+}
+
+.header-btn{
+  background:#ff3d81;
+  border:0;
+  color:white;
+  padding:9px 13px;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.hero{
+  padding:35px 18px;
+  background:
+    linear-gradient(180deg,#151529,#08080f);
+}
+
+.hero h1{
+  font-size:34px;
+  margin-bottom:10px;
+}
+
+.hero p{
+  color:#aaa;
+  margin-bottom:20px;
+}
+
+.search{
+  width:100%;
+  padding:15px;
+  background:#151522;
+  border:1px solid #303044;
+  border-radius:10px;
+  color:#fff;
+  outline:none;
+  font-size:16px;
+}
+
+.container{
+  padding:20px 16px;
+}
+
+.section-title{
+  margin-bottom:18px;
+  font-size:22px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:
+    repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.card{
+  background:#141420;
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid #242437;
+  cursor:pointer;
+}
+
+.poster{
+  width:100%;
+  aspect-ratio:2/3;
+  object-fit:cover;
+  background:#20202d;
+}
+
+.card-info{
+  padding:10px;
+}
+
+.card-title{
+  font-size:15px;
+  font-weight:bold;
+  margin-bottom:5px;
+}
+
+.card-meta{
+  color:#888;
+  font-size:12px;
+}
+
+.empty{
+  text-align:center;
+  color:#777;
+  padding:50px 10px;
+}
+
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.88);
+  z-index:100;
+  overflow:auto;
+  padding:20px;
+}
+
+.modal-box{
+  max-width:600px;
+  margin:20px auto;
+  background:#13131f;
+  border:1px solid #303044;
+  border-radius:14px;
+  padding:20px;
+}
+
+.close{
+  float:right;
+  background:#292936;
+  border:0;
+  color:#fff;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  font-size:20px;
+}
+
+.modal h2{
+  margin-bottom:20px;
+}
+
+label{
+  display:block;
+  margin:15px 0 7px;
+  color:#ccc;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  padding:13px;
+  border-radius:8px;
+  border:1px solid #343449;
+  background:#090912;
+  color:#fff;
+  outline:none;
+  font-size:15px;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.primary{
+  width:100%;
+  margin-top:18px;
+  padding:14px;
+  background:#ff3d81;
+  color:white;
+  border:0;
+  border-radius:8px;
+  font-weight:bold;
+  font-size:16px;
+}
+
+.anime-detail{
+  display:none;
+  padding:20px 16px;
+}
+
+.back{
+  background:#222230;
+  color:#fff;
+  border:0;
+  padding:10px 15px;
+  border-radius:8px;
+  margin-bottom:20px;
+}
+
+.detail-top{
+  display:flex;
+  gap:18px;
+}
+
+.detail-poster{
+  width:130px;
+  height:195px;
+  object-fit:cover;
+  border-radius:9px;
+}
+
+.detail-info{
+  flex:1;
+}
+
+.detail-info h1{
+  font-size:23px;
+  margin-bottom:10px;
+}
+
+.genre{
+  color:#ff3d81;
+  margin-bottom:10px;
+  font-size:13px;
+}
+
+.description{
+  color:#aaa;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.episode-list{
+  margin-top:25px;
+}
+
+.episode{
+  width:100%;
+  padding:14px;
+  margin-bottom:9px;
+  background:#171725;
+  border:1px solid #29293c;
+  color:#fff;
+  border-radius:8px;
+  text-align:left;
+}
+
+.episode:hover{
+  background:#ff3d81;
+}
+
+.player{
+  margin-top:20px;
+}
+
+.player video{
+  width:100%;
+  max-height:60vh;
+  background:#000;
+  border-radius:10px;
+}
+
+.player-title{
+  margin:12px 0;
+}
+
+.delete{
+  background:#c62828;
+  color:white;
+  border:0;
+  padding:10px 14px;
+  border-radius:8px;
+  margin-top:15px;
+}
+
+.status{
+  margin-top:12px;
+  color:#ff3d81;
+  text-align:center;
+}
+
+@media(max-width:350px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased">
 
-    <div class="flex flex-col md:flex-row h-[100dvh] overflow-hidden">
-        
-        <!-- Sidebar Navigation -->
-        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col justify-between hidden md:flex">
-            <div>
-                <!-- Logo -->
-                <div class="p-6 flex items-center space-x-3">
-                    <div class="bg-rose-600 p-2 rounded-xl text-white font-bold text-xl">⚡</div>
-                    <span class="text-xl font-bold tracking-wider text-white">AnimeHub</span>
-                </div>
+<body>
 
-                <!-- Navigation Links -->
-                <nav class="px-4 space-y-1">
-                    <button onclick="filterCategory('all')" id="nav-all" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white">
-                        🔥 All Anime
-                    </button>
-                    <button onclick="filterCategory('hindi')" id="nav-hindi" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
-                        🇮🇳 Hindi Dubbed
-                    </button>
-                    <button onclick="filterCategory('english')" id="nav-english" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
-                        🇺🇸 English Dubbed
-                    </button>
-                </nav>
-            </div>
+<header>
+  <div class="logo">
+    ANIME<span>HUB</span>
+  </div>
 
-            <!-- Footer Profile -->
-            <div class="p-4 border-t border-slate-800">
-                <div class="flex items-center space-x-3 px-2 py-2">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-purple-500 flex items-center justify-center font-bold text-white">U</div>
-                    <div class="overflow-hidden">
-                        <p class="text-sm font-semibold text-white truncate">Uday Choudhary</p>
-                        <p class="text-xs text-rose-400">Owner / Admin</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+  <button class="header-btn"
+          onclick="openAdmin()">
+    + Upload
+  </button>
+</header>
 
-        <!-- Mobile Top Filter Bar -->
-        <div class="md:hidden bg-slate-900 border-b border-slate-800 p-3 flex justify-around items-center shrink-0">
-            <button onclick="filterCategory('all')" id="mob-all" class="text-xs px-3 py-1.5 rounded-lg font-medium bg-rose-600 text-white">All</button>
-            <button onclick="filterCategory('hindi')" id="mob-hindi" class="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400">Hindi Dub</button>
-            <button onclick="filterCategory('english')" id="mob-english" class="text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400">English Dub</button>
+<section class="hero" id="homeHero">
+
+  <h1>Anime World</h1>
+
+  <p>
+    Your personal anime collection
+  </p>
+
+  <input
+    id="search"
+    class="search"
+    type="search"
+    placeholder="Search anime..."
+  >
+
+</section>
+
+<main class="container" id="home">
+
+  <h2 class="section-title">
+    Anime Collection
+  </h2>
+
+  <div id="animeGrid" class="grid"></div>
+
+</main>
+
+<section id="animeDetail"
+         class="anime-detail">
+
+  <button class="back"
+          onclick="showHome()">
+    ← Back
+  </button>
+
+  <div id="detailContent"></div>
+
+</section>
+
+
+<!-- ADMIN MODAL -->
+
+<div id="adminModal"
+     class="modal">
+
+  <div class="modal-box">
+
+    <button class="close"
+            onclick="closeAdmin()">
+      ×
+    </button>
+
+    <h2>Add Anime</h2>
+
+    <label>Anime Name</label>
+
+    <input
+      id="animeName"
+      placeholder="Example: My Anime"
+    >
+
+    <label>Genre</label>
+
+    <input
+      id="animeGenre"
+      placeholder="Action, Fantasy..."
+    >
+
+    <label>Description</label>
+
+    <textarea
+      id="animeDescription"
+      placeholder="Anime description..."
+    ></textarea>
+
+    <label>Poster</label>
+
+    <input
+      id="animePoster"
+      type="file"
+      accept="image/*"
+    >
+
+    <button class="primary"
+            onclick="addAnime()">
+      Add Anime
+    </button>
+
+    <p id="status"
+       class="status"></p>
+
+  </div>
+
+</div>
+
+
+<!-- EPISODE MODAL -->
+
+<div id="episodeModal"
+     class="modal">
+
+  <div class="modal-box">
+
+    <button class="close"
+            onclick="closeEpisode()">
+      ×
+    </button>
+
+    <h2>Add Episode</h2>
+
+    <input
+      type="hidden"
+      id="episodeAnimeId"
+    >
+
+    <label>Episode Number</label>
+
+    <input
+      id="episodeNumber"
+      type="number"
+      min="1"
+      placeholder="1"
+    >
+
+    <label>Episode Title</label>
+
+    <input
+      id="episodeTitle"
+      placeholder="Episode title"
+    >
+
+    <label>Video</label>
+
+    <input
+      id="episodeVideo"
+      type="file"
+      accept="video/*"
+    >
+
+    <button class="primary"
+            onclick="addEpisode()">
+      Upload Episode
+    </button>
+
+    <p id="episodeStatus"
+       class="status"></p>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const DB_NAME = "AnimeHubDB";
+const STORE = "anime";
+
+let db;
+let currentAnime = null;
+
+
+/* =========================
+   DATABASE
+========================= */
+
+function openDB(){
+
+  return new Promise((resolve,reject)=>{
+
+    const request =
+      indexedDB.open(DB_NAME,1);
+
+    request.onupgradeneeded = e => {
+
+      const database = e.target.result;
+
+      if(!database.objectStoreNames
+         .contains(STORE)){
+
+        database.createObjectStore(
+          STORE,
+          {keyPath:"id"}
+        );
+
+      }
+
+    };
+
+    request.onsuccess = e => {
+
+      db = e.target.result;
+
+      resolve(db);
+
+    };
+
+    request.onerror = () =>
+      reject(request.error);
+
+  });
+
+}
+
+
+function getAllAnime(){
+
+  return new Promise((resolve,reject)=>{
+
+    const tx =
+      db.transaction(STORE,"readonly");
+
+    const store =
+      tx.objectStore(STORE);
+
+    const request =
+      store.getAll();
+
+    request.onsuccess = () =>
+      resolve(request.result);
+
+    request.onerror = () =>
+      reject(request.error);
+
+  });
+
+}
+
+
+function saveAnime(anime){
+
+  return new Promise((resolve,reject)=>{
+
+    const tx =
+      db.transaction(STORE,"readwrite");
+
+    tx.objectStore(STORE)
+      .put(anime);
+
+    tx.oncomplete = resolve;
+
+    tx.onerror = () =>
+      reject(tx.error);
+
+  });
+
+}
+
+
+function deleteAnime(id){
+
+  return new Promise((resolve,reject)=>{
+
+    const tx =
+      db.transaction(STORE,"readwrite");
+
+    tx.objectStore(STORE)
+      .delete(id);
+
+    tx.oncomplete = resolve;
+
+    tx.onerror = () =>
+      reject(tx.error);
+
+  });
+
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+async function renderHome(){
+
+  const anime =
+    await getAllAnime();
+
+  const search =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase()
+      .trim();
+
+  const filtered =
+    anime.filter(a =>
+      a.name.toLowerCase()
+       .includes(search)
+    );
+
+  const grid =
+    document.getElementById("animeGrid");
+
+  if(filtered.length === 0){
+
+    grid.innerHTML = `
+      <div class="empty">
+        No anime found.
+        <br><br>
+        Tap "+ Upload" to add one.
+      </div>
+    `;
+
+    return;
+
+  }
+
+  grid.innerHTML =
+    filtered.map(a => `
+
+      <div class="card"
+           onclick="openAnime('${a.id}')">
+
+        ${
+          a.poster
+          ?
+          `<img class="poster"
+                src="${URL.createObjectURL(a.poster)}">`
+          :
+          `<div class="poster"></div>`
+        }
+
+        <div class="card-info">
+
+          <div class="card-title">
+            ${escapeHTML(a.name)}
+          </div>
+
+          <div class="card-meta">
+            ${escapeHTML(a.genre || "Anime")}
+            •
+            ${a.episodes.length} Episodes
+          </div>
+
         </div>
 
-        <!-- Main Workspace -->
-        <main class="flex-1 flex flex-col bg-slate-950 overflow-hidden">
-            
-            <!-- Top Navbar -->
-            <header class="h-14 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-slate-900/50 backdrop-blur shrink-0">
-                <h1 id="page-title" class="text-base md:text-lg font-semibold text-white">Explore Anime Collection</h1>
-                <input type="text" id="search-bar" onkeyup="searchAnime()" placeholder="Search anime..." class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-rose-600 w-36 md:w-64">
-            </header>
+      </div>
 
-            <!-- Anime Grid Container -->
-            <div class="flex-1 p-4 md:p-6 overflow-y-auto max-w-7xl w-full mx-auto">
-                <div id="anime-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    
-                    <!-- Anime Item 1 (Hindi Dub) -->
-                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="hindi" data-title="naruto shippuden hindi dub">
-                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
-                            Naruto Poster
-                            <span class="absolute top-3 left-3 bg-rose-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">Hindi Dub</span>
-                        </div>
-                        <div class="p-4 space-y-2">
-                            <h3 class="font-bold text-white text-base">Naruto Shippuden (Hindi)</h3>
-                            <p class="text-xs text-slate-400">Action, Adventure • 500+ Episodes</p>
-                            <div class="pt-2 flex space-x-2">
-                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
-                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
-                            </div>
-                        </div>
-                    </div>
+    `).join("");
 
-                    <!-- Anime Item 2 (English Dub) -->
-                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="english" data-title="jujutsu kaisen english dub">
-                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
-                            Jujutsu Kaisen Poster
-                            <span class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">English Dub</span>
-                        </div>
-                        <div class="p-4 space-y-2">
-                            <h3 class="font-bold text-white text-base">Jujutsu Kaisen (English)</h3>
-                            <p class="text-xs text-slate-400">Supernatural, Action • Season 2</p>
-                            <div class="pt-2 flex space-x-2">
-                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
-                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
-                            </div>
-                        </div>
-                    </div>
+}
 
-                    <!-- Anime Item 3 (Both/Hindi & English) -->
-                    <div class="anime-card bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between" data-category="hindi english" data-title="dragon ball z hindi english dub">
-                        <div class="h-44 bg-slate-800 relative flex items-center justify-center text-slate-500 font-semibold">
-                            Dragon Ball Z Poster
-                            <div class="absolute top-3 left-3 flex space-x-1">
-                                <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">Hindi</span>
-                                <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg">English</span>
-                            </div>
-                        </div>
-                        <div class="p-4 space-y-2">
-                            <h3 class="font-bold text-white text-base">Dragon Ball Z (Multi-Audio)</h3>
-                            <p class="text-xs text-slate-400">Action, Martial Arts • Remastered</p>
-                            <div class="pt-2 flex space-x-2">
-                                <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Links</a>
-                                <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
-                            </div>
-                        </div>
-                    </div>
 
-                </div>
-            </div>
-        </main>
-    </div>
+/* =========================
+   OPEN ANIME
+========================= */
 
-    <!-- JavaScript Filter and Search Logic -->
-    <script>
-        function filterCategory(category) {
-            const cards = document.querySelectorAll('.anime-card');
-            
-            // Update button active states
-            ['all', 'hindi', 'english'].forEach(cat => {
-                const btnDesk = document.getElementById('nav-' + cat);
-                const btnMob = document.getElementById('mob-' + cat);
-                if(btnDesk) btnDesk.className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
-                if(btnMob) btnMob.className = "text-xs px-3 py-1.5 rounded-lg font-medium text-slate-400";
-            });
+async function openAnime(id){
 
-            if(document.getElementById('nav-' + category)) {
-                document.getElementById('nav-' + category).className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
-            }
-            if(document.getElementById('mob-' + category)) {
-                document.getElementById('mob-' + category).className = "text-xs px-3 py-1.5 rounded-lg font-medium bg-rose-600 text-white";
-            }
+  const anime =
+    (await getAllAnime())
+    .find(a => a.id === id);
 
-            // Filter cards
-            cards.forEach(card => {
-                const cardCats = card.getAttribute('data-category');
-                if (category === 'all' || cardCats.includes(category)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+  if(!anime) return;
+
+  currentAnime = anime;
+
+  document.getElementById("home")
+    .style.display = "none";
+
+  document.getElementById("homeHero")
+    .style.display = "none";
+
+  document.getElementById("animeDetail")
+    .style.display = "block";
+
+  const poster =
+    anime.poster
+    ?
+    URL.createObjectURL(anime.poster)
+    :
+    "";
+
+  document.getElementById("detailContent")
+    .innerHTML = `
+
+      <div class="detail-top">
+
+        ${
+          poster
+          ?
+          `<img class="detail-poster"
+                src="${poster}">`
+          :
+          ""
         }
 
-        function searchAnime() {
-            const query = document.getElementById('search-bar').value.toLowerCase();
-            const cards = document.querySelectorAll('.anime-card');
+        <div class="detail-info">
 
-            cards.forEach(card => {
-                const title = card.getAttribute('data-title');
-                if (title.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+          <h1>
+            ${escapeHTML(anime.name)}
+          </h1>
+
+          <div class="genre">
+            ${escapeHTML(anime.genre || "Anime")}
+          </div>
+
+          <div class="description">
+            ${escapeHTML(anime.description || "")}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="episode-list">
+
+        <h2>Episodes</h2>
+
+        ${
+          anime.episodes.length
+          ?
+          anime.episodes
+            .map((ep,i)=>`
+
+              <button class="episode"
+                onclick="playEpisode(${i})">
+
+                ▶ Episode ${ep.number}
+                ${ep.title
+                  ? " - "+escapeHTML(ep.title)
+                  : ""}
+
+              </button>
+
+            `).join("")
+          :
+          `<p class="empty">
+             No episodes yet.
+           </p>`
         }
-    </script>
+
+        <button
+          class="primary"
+          onclick="openEpisode('${anime.id}')">
+
+          + Add Episode
+
+        </button>
+
+        <button
+          class="delete"
+          onclick="removeCurrentAnime()">
+
+          Delete Anime
+
+        </button>
+
+      </div>
+
+      <div id="player"
+           class="player">
+      </div>
+
+    `;
+
+}
+
+
+function showHome(){
+
+  document.getElementById("animeDetail")
+    .style.display = "none";
+
+  document.getElementById("home")
+    .style.display = "block";
+
+  document.getElementById("homeHero")
+    .style.display = "block";
+
+  currentAnime = null;
+
+  renderHome();
+
+}
+
+
+/* =========================
+   VIDEO PLAYER
+========================= */
+
+function playEpisode(index){
+
+  if(!currentAnime) return;
+
+  const episode =
+    currentAnime.episodes[index];
+
+  const url =
+    URL.createObjectURL(episode.video);
+
+  document.getElementById("player")
+    .innerHTML = `
+
+      <h3 class="player-title">
+        ${escapeHTML(
+          episode.title ||
+          "Episode "+episode.number
+        )}
+      </h3>
+
+      <video controls
+             autoplay
+             playsinline>
+
+        <source src="${url}">
+
+        Your browser does not support
+        video playback.
+
+      </video>
+
+    `;
+
+}
+
+
+/* =========================
+   ADMIN
+========================= */
+
+function openAdmin(){
+
+  document.getElementById("adminModal")
+    .style.display = "block";
+
+}
+
+function closeAdmin(){
+
+  document.getElementById("adminModal")
+    .style.display = "none";
+
+}
+
+
+async function addAnime(){
+
+  const name =
+    document.getElementById("animeName")
+      .value.trim();
+
+  if(!name){
+
+    alert("Anime name required.");
+
+    return;
+
+  }
+
+  const posterInput =
+    document.getElementById("animePoster");
+
+  const poster =
+    posterInput.files[0] || null;
+
+  const anime = {
+
+    id:
+      Date.now().toString(),
+
+    name,
+
+    genre:
+      document.getElementById("animeGenre")
+        .value.trim(),
+
+    description:
+      document.getElementById("animeDescription")
+        .value.trim(),
+
+    poster,
+
+    episodes:[],
+
+    createdAt:
+      new Date().toISOString()
+
+  };
+
+  await saveAnime(anime);
+
+  document.getElementById("status")
+    .textContent =
+      "Anime added successfully!";
+
+  document.getElementById("animeName")
+    .value = "";
+
+  document.getElementById("animeGenre")
+    .value = "";
+
+  document.getElementById("animeDescription")
+    .value = "";
+
+  document.getElementById("animePoster")
+    .value = "";
+
+  await renderHome();
+
+}
+
+
+/* =========================
+   EPISODE
+========================= */
+
+function openEpisode(id){
+
+  document.getElementById("episodeAnimeId")
+    .value = id;
+
+  document.getElementById("episodeModal")
+    .style.display = "block";
+
+}
+
+
+function closeEpisode(){
+
+  document.getElementById("episodeModal")
+    .style.display = "none";
+
+}
+
+
+async function addEpisode(){
+
+  const id =
+    document.getElementById("episodeAnimeId")
+      .value;
+
+  const anime =
+    (await getAllAnime())
+      .find(a => a.id === id);
+
+  if(!anime) return;
+
+
+  const number =
+    document.getElementById("episodeNumber")
+      .value;
+
+  const title =
+    document.getElementById("episodeTitle")
+      .value.trim();
+
+  const video =
+    document.getElementById("episodeVideo")
+      .files[0];
+
+
+  if(!number || !video){
+
+    alert(
+      "Episode number and video are required."
+    );
+
+    return;
+
+  }
+
+
+  anime.episodes.push({
+
+    id:
+      Date.now().toString(),
+
+    number:
+      Number(number),
+
+    title,
+
+    video
+
+  });
+
+
+  await saveAnime(anime);
+
+  document.getElementById("episodeStatus")
+    .textContent =
+      "Episode uploaded successfully!";
+
+
+  document.getElementById("episodeNumber")
+    .value = "";
+
+  document.getElementById("episodeTitle")
+    .value = "";
+
+  document.getElementById("episodeVideo")
+    .value = "";
+
+
+  currentAnime = anime;
+
+  closeEpisode();
+
+  openAnime(id);
+
+}
+
+
+/* =========================
+   DELETE
+========================= */
+
+async function removeCurrentAnime(){
+
+  if(!currentAnime) return;
+
+  const confirmDelete =
+    confirm(
+      "Delete this anime and all episodes?"
+    );
+
+  if(!confirmDelete) return;
+
+  await deleteAnime(currentAnime.id);
+
+  showHome();
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document
+  .getElementById("search")
+  .addEventListener(
+    "input",
+    renderHome
+  );
+
+
+/* =========================
+   SECURITY / TEXT
+========================= */
+
+function escapeHTML(text){
+
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+(async function(){
+
+  try{
+
+    await openDB();
+
+    await renderHome();
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Browser storage could not be opened."
+    );
+
+  }
+
+})();
+
+</script>
 
 </body>
 </html>
