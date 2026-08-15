@@ -1,0 +1,290 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #08080f;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  height: 65px;
+  padding: 0 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #11111c;
+  border-bottom: 1px solid #29293a;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo {
+  color: white;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.logo span,
+.login-box h1 span {
+  color: #ff3d81;
+}
+
+nav a {
+  color: #ddd;
+  text-decoration: none;
+  margin-left: 18px;
+}
+
+.hero {
+  padding: 60px 7%;
+  background: linear-gradient(
+    180deg,
+    #17172b,
+    #08080f
+  );
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.hero p {
+  color: #aaa;
+}
+
+.search {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px;
+  margin-top: 20px;
+  background: #11111d;
+  color: white;
+  border: 1px solid #303044;
+  border-radius: 9px;
+  outline: none;
+}
+
+.container,
+.admin {
+  width: 88%;
+  max-width: 1200px;
+  margin: 35px auto;
+}
+
+.anime-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fill, minmax(170px, 1fr));
+  gap: 18px;
+}
+
+.anime-card {
+  color: white;
+  text-decoration: none;
+  background: #141420;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.anime-card:hover {
+  transform: translateY(-4px);
+}
+
+.anime-card img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.card-info {
+  padding: 12px;
+}
+
+.card-info h3 {
+  margin: 0 0 7px;
+  font-size: 16px;
+}
+
+.card-info p {
+  color: #999;
+  margin: 0;
+  font-size: 13px;
+}
+
+.empty {
+  color: #777;
+  padding: 40px 0;
+}
+
+.anime-detail {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 25px;
+}
+
+.detail-poster {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.detail-info h1 {
+  font-size: 32px;
+}
+
+.genre {
+  color: #ff3d81;
+}
+
+.description {
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.episodes {
+  margin-top: 35px;
+}
+
+.episode {
+  display: block;
+  width: 100%;
+  max-width: 700px;
+  padding: 14px;
+  margin: 9px 0;
+  background: #171725;
+  color: white;
+  border: 1px solid #303044;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.episode:hover {
+  background: #ff3d81;
+}
+
+.player {
+  margin-top: 30px;
+}
+
+.video {
+  width: 100%;
+  max-height: 650px;
+  background: #000;
+  border-radius: 10px;
+}
+
+.download {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 12px 18px;
+  background: #ff3d81;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+}
+
+.admin-card {
+  background: #141420;
+  padding: 22px;
+  margin: 20px 0;
+  border-radius: 12px;
+}
+
+.admin-card input,
+.admin-card textarea,
+.admin-card select,
+.login-box input {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  background: #090912;
+  border: 1px solid #303044;
+  color: white;
+  border-radius: 8px;
+}
+
+.admin-card textarea {
+  min-height: 110px;
+}
+
+.primary {
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #ff3d81;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete,
+.logout {
+  padding: 10px 14px;
+  background: #c62828;
+  color: white;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.admin-anime {
+  padding: 14px 0;
+  border-bottom: 1px solid #29293a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background: #141420;
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.login-box h1 {
+  text-align: center;
+}
+
+@media(max-width:600px) {
+
+  .hero h1 {
+    font-size: 34px;
+  }
+
+  .anime-detail {
+    grid-template-columns: 130px 1fr;
+  }
+
+  .detail-info h1 {
+    font-size: 23px;
+  }
+
+  .container,
+  .admin {
+    width: 92%;
+  }
+
+  .anime-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
