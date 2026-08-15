@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OmniAI - All-in-One AI Platform</title>
+    <title>AnimeVerse - Upload & Download Anime</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -11,25 +11,22 @@
 
     <div class="flex flex-col md:flex-row h-[100dvh] overflow-hidden">
         
-        <!-- Desktop Sidebar -->
+        <!-- Sidebar Navigation -->
         <aside class="w-64 bg-slate-900 border-r border-slate-800 flex-col justify-between hidden md:flex">
             <div>
                 <!-- Logo -->
                 <div class="p-6 flex items-center space-x-3">
-                    <div class="bg-indigo-600 p-2 rounded-xl text-white font-bold text-xl">✨</div>
-                    <span class="text-xl font-bold tracking-wider text-white">OmniAI</span>
+                    <div class="bg-rose-600 p-2 rounded-xl text-white font-bold text-xl">🍥</div>
+                    <span class="text-xl font-bold tracking-wider text-white">AnimeVerse</span>
                 </div>
 
                 <!-- Navigation Links -->
                 <nav class="px-4 space-y-1">
-                    <button onclick="switchTab('chat')" id="btn-chat" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-indigo-600 text-white">
-                        💬 AI Chatbot
+                    <button onclick="switchTab('home')" id="btn-home" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white">
+                        🏠 Home / Downloads
                     </button>
-                    <button onclick="switchTab('image')" id="btn-image" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
-                        🎨 Image Generator
-                    </button>
-                    <button onclick="switchTab('code')" id="btn-code" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
-                        💻 Code Assistant
+                    <button onclick="switchTab('upload')" id="btn-upload" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white">
+                        📤 Upload Anime (Admin)
                     </button>
                 </nav>
             </div>
@@ -37,21 +34,19 @@
             <!-- User Profile Footer -->
             <div class="p-4 border-t border-slate-800">
                 <div class="flex items-center space-x-3 px-2 py-2">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-white">U</div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-rose-500 to-purple-500 flex items-center justify-center font-bold text-white">U</div>
                     <div class="overflow-hidden">
                         <p class="text-sm font-semibold text-white truncate">Uday Choudhary</p>
-                        <p class="text-xs text-indigo-400">Pro Plan</p>
-                        <p class="text-[10px] text-slate-500 truncate mt-0.5">uc589677@gmail.com</p>
+                        <p class="text-xs text-rose-400">Admin</p>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- Mobile Top Bar for Tabs -->
+        <!-- Mobile Top Bar -->
         <div class="md:hidden bg-slate-900 border-b border-slate-800 p-3 flex justify-around items-center shrink-0">
-            <button onclick="switchTab('chat')" id="mob-btn-chat" class="text-xs px-3 py-2 rounded-lg font-medium bg-indigo-600 text-white">💬 Chat</button>
-            <button onclick="switchTab('image')" id="mob-btn-image" class="text-xs px-3 py-2 rounded-lg font-medium text-slate-400">🎨 Image</button>
-            <button onclick="switchTab('code')" id="mob-btn-code" class="text-xs px-3 py-2 rounded-lg font-medium text-slate-400">💻 Code</button>
+            <button onclick="switchTab('home')" id="mob-btn-home" class="text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white">🏠 Home</button>
+            <button onclick="switchTab('upload')" id="mob-btn-upload" class="text-xs px-4 py-2 rounded-lg font-medium text-slate-400">📤 Upload</button>
         </div>
 
         <!-- Main Workspace -->
@@ -59,201 +54,120 @@
             
             <!-- Top Navbar -->
             <header class="h-14 border-b border-slate-800 flex items-center justify-between px-4 md:px-6 bg-slate-900/50 backdrop-blur shrink-0">
-                <h1 id="page-title" class="text-base md:text-lg font-semibold capitalize text-white">Chat Workspace</h1>
-                <span class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-medium">Gemini API Connected</span>
+                <h1 id="page-title" class="text-base md:text-lg font-semibold text-white">Anime Library & Downloads</h1>
+                <span class="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-medium">Cloud Storage Ready</span>
             </header>
 
             <!-- Dynamic Content Area -->
-            <div class="flex-1 p-4 md:p-6 flex flex-col justify-between max-w-5xl w-full mx-auto overflow-hidden">
+            <div class="flex-1 p-4 md:p-6 overflow-y-auto max-w-6xl w-full mx-auto">
                 
-                <!-- 1. Chat Tab -->
-                <div id="tab-chat" class="flex flex-col h-full space-y-4 overflow-hidden">
-                    <div id="chat-messages" class="flex-1 space-y-4 overflow-y-auto pr-2">
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs shrink-0">AI</div>
-                            <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-xl text-slate-200 text-sm md:text-base">
-                                Hello Uday! Main aapka AI assistant hoon. Aaj main aapki kis cheez mein madad karoon?
-                            </div>
-                        </div>
+                <!-- 1. Home / Download Tab -->
+                <div id="tab-home" class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-white">Latest Anime Episodes</h2>
+                        <input type="text" placeholder="Search anime..." class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
                     </div>
-                    <!-- Input Box -->
-                    <div class="relative shrink-0 pt-2">
-                        <input type="text" id="chat-input" placeholder="Type a message or prompt..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3.5 pl-4 pr-16 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600 transition" onkeypress="handleKeyPress(event)">
-                        <button onclick="sendMessage()" class="absolute right-2.5 top-3.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition">Send</button>
-                    </div>
-                </div>
 
-                <!-- 2. Image Generator Tab -->
-                <div id="tab-image" class="hidden flex flex-col h-full space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-md font-semibold text-white mb-2">Image Parameters</h3>
-                                <p class="text-xs text-slate-400 mb-4">Describe the image you want to generate using text prompts.</p>
-                                <textarea id="image-prompt" rows="4" placeholder="A futuristic cyberpunk city in neon lights..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-indigo-600 text-sm"></textarea>
+                    <!-- Anime Grid -->
+                    <div id="anime-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Sample Anime Card -->
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between">
+                            <div class="h-40 bg-slate-800 flex items-center justify-center text-slate-500 font-semibold">
+                                Anime Poster
                             </div>
-                            <button onclick="generateImage()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold transition mt-4">Generate Image</button>
-                        </div>
-                        <div id="image-preview" class="bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-center text-slate-600 text-sm min-h-[150px] p-4 text-center">
-                            Generated preview will appear here
+                            <div class="p-4 space-y-2">
+                                <h3 class="font-bold text-white text-base">Naruto Shippuden - Ep 101</h3>
+                                <p class="text-xs text-slate-400">Action, Adventure, Ninja</p>
+                                <div class="pt-2 flex space-x-2">
+                                    <a href="#" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download (720p)</a>
+                                    <a href="#" class="px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl text-xs font-semibold transition">Watch</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Code Assistant Tab -->
-                <div id="tab-code" class="hidden flex flex-col h-full space-y-4">
-                    <div class="flex-1 flex flex-col space-y-3 overflow-hidden">
-                        <textarea id="code-input" rows="4" placeholder="Paste your buggy code or describe the function you want to create..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-600 shrink-0"></textarea>
-                        <button onclick="generateCode()" class="self-end bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl font-semibold transition text-sm shrink-0">Debug & Write Code</button>
-                        <div id="code-output" class="flex-1 bg-slate-900 border border-slate-800 rounded-2xl p-4 text-slate-200 text-xs md:text-sm overflow-y-auto font-mono">
-                            AI generated code / solutions will appear here...
+                <!-- 2. Upload Tab (Admin Panel) -->
+                <div id="tab-upload" class="hidden max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h2 class="text-lg font-bold text-white mb-2">Upload New Anime Episode</h2>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Anime Title & Episode</label>
+                            <input type="text" id="anime-title" placeholder="e.g., Jujutsu Kaisen Season 2 - Ep 01" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Genres / Tags</label>
+                            <input type="text" id="anime-genre" placeholder="e.g., Action, Supernatural" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-400 block mb-1">Video Download Link (Cloud URL / Mega / Drive)</label>
+                            <input type="text" id="anime-link" placeholder="https://..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-rose-600">
                         </div>
                     </div>
+
+                    <button onclick="uploadAnime()" class="w-full bg-rose-600 hover:bg-rose-500 text-white py-3 rounded-xl font-semibold transition mt-2">Publish & Make Available</button>
                 </div>
 
             </div>
         </main>
     </div>
 
-    <!-- JavaScript with Real Gemini API Integration -->
+    <!-- JavaScript Logic -->
     <script>
-        // Yahan apni Gemini API Key dalein
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-
         function switchTab(tabName) {
-            document.getElementById('tab-chat').classList.add('hidden');
-            document.getElementById('tab-image').classList.add('hidden');
-            document.getElementById('tab-code').classList.add('hidden');
+            document.getElementById('tab-home').classList.add('hidden');
+            document.getElementById('tab-upload').classList.add('hidden');
 
-            document.getElementById('btn-chat').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
-            document.getElementById('btn-image').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
-            document.getElementById('btn-code').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+            document.getElementById('btn-home').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
+            document.getElementById('btn-upload').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-slate-400 hover:bg-slate-800 hover:text-white";
 
-            document.getElementById('mob-btn-chat').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
-            document.getElementById('mob-btn-image').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
-            document.getElementById('mob-btn-code').className = "text-xs px-3 py-2 rounded-lg font-medium text-slate-400";
+            document.getElementById('mob-btn-home').className = "text-xs px-4 py-2 rounded-lg font-medium text-slate-400";
+            document.getElementById('mob-btn-upload').className = "text-xs px-4 py-2 rounded-lg font-medium text-slate-400";
 
             document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('btn-' + tabName).className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-indigo-600 text-white";
-            document.getElementById('mob-btn-' + tabName).className = "text-xs px-3 py-2 rounded-lg font-medium bg-indigo-600 text-white";
-
-            document.getElementById('page-title').innerText = tabName + ' Workspace';
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        async function callGeminiAPI(promptText) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: promptText }] }]
-                })
-            });
-
-            const data = await response.json();
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                return data.candidates[0].content.parts[0].text;
+            if(tabName === 'home') {
+                document.getElementById('btn-home').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
+                document.getElementById('mob-btn-home').className = "text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white";
+                document.getElementById('page-title').innerText = "Anime Library & Downloads";
             } else {
-                throw new Error('Invalid response from AI');
+                document.getElementById('btn-upload').className = "w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition bg-rose-600 text-white";
+                document.getElementById('mob-btn-upload').className = "text-xs px-4 py-2 rounded-lg font-medium bg-rose-600 text-white";
+                document.getElementById('page-title').innerText = "Admin Upload Panel";
             }
         }
 
-        async function sendMessage() {
-            const inputField = document.getElementById('chat-input');
-            const messageText = inputField.value.trim();
-            if (!messageText) return;
+        function uploadAnime() {
+            const title = document.getElementById('anime-title').value.trim();
+            const genre = document.getElementById('anime-genre').value.trim();
+            const link = document.getElementById('anime-link').value.trim();
 
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                alert("Pehle code mein apni asli Gemini API key daliye!");
+            if(!title || !link) {
+                alert('Please fill out the title and download link!');
                 return;
             }
 
-            const chatMessages = document.getElementById('chat-messages');
-
-            // User Message Bubble
-            const userBubble = document.createElement('div');
-            userBubble.className = "flex items-start justify-end space-x-3";
-            userBubble.innerHTML = `
-                <div class="bg-indigo-600 text-white p-4 rounded-2xl max-w-xl text-sm md:text-base">
-                    ${escapeHtml(messageText)}
+            const grid = document.getElementById('anime-grid');
+            const card = document.createElement('div');
+            card.className = "bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col justify-between";
+            card.innerHTML = `
+                <div class="h-40 bg-slate-800 flex items-center justify-center text-slate-500 font-semibold">
+                    Anime Poster
                 </div>
-                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs shrink-0 text-indigo-400 font-bold">U</div>
-            `;
-            chatMessages.appendChild(userBubble);
-            inputField.value = '';
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Loading AI Bubble
-            const aiBubble = document.createElement('div');
-            aiBubble.className = "flex items-start space-x-3";
-            aiBubble.id = "loading-bubble";
-            aiBubble.innerHTML = `
-                <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs shrink-0">AI</div>
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-xl text-slate-400 text-sm md:text-base animate-pulse">
-                    Thinking...
-                </div>
-            `;
-            chatMessages.appendChild(aiBubble);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            try {
-                const aiReply = await callGeminiAPI(messageText);
-                aiBubble.remove();
-
-                const finalAiBubble = document.createElement('div');
-                finalAiBubble.className = "flex items-start space-x-3";
-                finalAiBubble.innerHTML = `
-                    <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-xs shrink-0">AI</div>
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl max-w-xl text-slate-200 text-sm md:text-base whitespace-pre-wrap">
-                        ${escapeHtml(aiReply)}
+                <div class="p-4 space-y-2">
+                    <h3 class="font-bold text-white text-base">${escapeHtml(title)}</h3>
+                    <p class="text-xs text-slate-400">${escapeHtml(genre || 'Anime')}</p>
+                    <div class="pt-2 flex space-x-2">
+                        <a href="${escapeHtml(link)}" target="_blank" class="flex-1 text-center bg-rose-600 hover:bg-rose-500 text-white py-2 rounded-xl text-xs font-semibold transition">Download Video</a>
                     </div>
-                `;
-                chatMessages.appendChild(finalAiBubble);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            } catch (error) {
-                aiBubble.remove();
-                alert('API Error: Kuch gadbad ho gayi, apni API key check karein.');
-            }
-        }
-
-        async function generateCode() {
-            const codeInput = document.getElementById('code-input').value.trim();
-            const codeOutput = document.getElementById('code-output');
-            if(!codeInput) {
-                alert('Pehle code ya description likhiye!');
-                return;
-            }
-
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY") {
-                alert("Pehle code mein apni asli Gemini API key daliye!");
-                return;
-            }
-
-            codeOutput.innerText = "Generating solution...";
-            try {
-                const prompt = "Write or fix code for the following request: " + codeInput;
-                const result = await callGeminiAPI(prompt);
-                codeOutput.innerText = result;
-            } catch (err) {
-                codeOutput.innerText = "Error generating code.";
-            }
-        }
-
-        function generateImage() {
-            const prompt = document.getElementById('image-prompt').value.trim();
-            const preview = document.getElementById('image-preview');
-            if(!prompt) {
-                alert('Pehle kuch prompt likhiye!');
-                return;
-            }
-            preview.innerHTML = `<span class="text-indigo-400">Image generation API requires backend server token. (Demo view for: "${escapeHtml(prompt)}")</span>`;
+                </div>
+            `;
+            grid.prepend(card);
+            alert('Anime uploaded successfully!');
+            document.getElementById('anime-title').value = '';
+            document.getElementById('anime-genre').value = '';
+            document.getElementById('anime-link').value = '';
+            switchTab('home');
         }
 
         function escapeHtml(text) {
@@ -263,5 +177,4 @@
     </script>
 
 </body>
-    </html>
-    
+</html>
